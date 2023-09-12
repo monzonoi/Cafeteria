@@ -13,12 +13,7 @@ namespace Cafeteria.Application.Service
 
         public CafeService(ICafeRepository cafeRepository)
         {
-            _cafeRepository = cafeRepository ?? throw new ArgumentNullException(nameof(cafeRepository));
-        }
-
-        public Cafe GetCById(int id)
-        {
-            return _cafeRepository.GetById(id);
+            _cafeRepository = cafeRepository;
         }
 
         public IEnumerable<Cafe> GetAll()
@@ -26,33 +21,39 @@ namespace Cafeteria.Application.Service
             return _cafeRepository.GetAll();
         }
 
-        public void Create(Cafe cafe)
+        public Cafe GetById(int id)
         {
-            // Puedes realizar validaciones o lógica de negocio aquí antes de agregar el café
-            _cafeRepository.Add(cafe);
+            return _cafeRepository.GetById(id);
         }
 
-        public void Update(Cafe cafe)
+        public void Create(Cafe cafe)
         {
-            // Puedes realizar validaciones o lógica de negocio aquí antes de actualizar el café
-            _cafeRepository.Update(cafe);
+            _cafeRepository.Add(cafe);
+            _cafeRepository.SaveChanges();
+        }
+
+        public void Update(int id, Cafe cafe)
+        {
+            var existingCafe = _cafeRepository.GetById(id);
+            if (existingCafe != null)
+            {
+                existingCafe.Nombre = cafe.Nombre;
+                existingCafe.Precio = cafe.Precio;
+                _cafeRepository.SaveChanges();
+            }
         }
 
         public void Delete(int id)
         {
-            // Puedes realizar validaciones o lógica de negocio aquí antes de eliminar el café
-            _cafeRepository.Delete(id);
+            var cafeToDelete = _cafeRepository.GetById(id);
+            if (cafeToDelete != null)
+            {
+                _cafeRepository.Remove(cafeToDelete);
+                _cafeRepository.SaveChanges();
+            }
         }
 
-        public Cafe GeteById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Cafe GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 
 }

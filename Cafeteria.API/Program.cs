@@ -1,9 +1,12 @@
 using Cafeteria.Application.Service;
 using Cafeteria.Domain;
-using Cafeteria.Infrastructure;
-using Cafeteria.Infrastructure.Repository;
+//using Cafeteria.Infrastructure;
+//using Cafeteria.Infrastructure.Repository;
 using Cafeteria.Intraestructura;
+using Cafeteria.Intraestructura.Repository;
 using Microsoft.EntityFrameworkCore;
+using Cafeteria.Domain;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

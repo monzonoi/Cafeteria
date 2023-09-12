@@ -8,9 +8,9 @@ namespace Cafeteria.Domain
 {
     public class Cafe
     {
-        public int Id { get; private set; }
-        public string Nombre { get; private set; }
-        public decimal Precio { get; private set; }
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public decimal Precio { get; set; }
         // Otros atributos y propiedades
 
         public Cafe(string nombre, decimal precio)

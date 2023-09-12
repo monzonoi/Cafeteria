@@ -12,9 +12,9 @@ namespace Cafeteria.Domain
         Cafe GetById(int id);
         void Add(Cafe cafe);
         void Update(Cafe cafe);
-        void Remove(Cafe cafe);
-        void Delete(int id);
+        void Remove(Cafe cafe);    
         IEnumerable<Cafe> GetAll();
         // Otros métodos de repositorio
+        void SaveChanges();
     }
 }

@@ -17,43 +17,41 @@ namespace Cafeteria.Intraestructura.Repository
    
     public class CafeRepository : ICafeRepository
     {
-        private readonly DbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
-        public CafeRepository(DbContext dbContext)
+        public CafeRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
+        public IEnumerable<Cafe> GetAll()
+        {
+            return _dbContext.Cafes.ToList();
+        }
+
         public Cafe GetById(int id)
         {
-            return _dbContext.Set<Cafe>().Find(id);
+            return _dbContext.Cafes.Find(id);
         }
 
         public void Add(Cafe cafe)
         {
-            _dbContext.Set<Cafe>().Add(cafe);
+            _dbContext.Cafes.Add(cafe);
         }
 
         public void Update(Cafe cafe)
         {
-            _dbContext.Set<Cafe>().Update(cafe);
+            _dbContext.Entry(cafe).State = EntityState.Modified;
         }
 
         public void Remove(Cafe cafe)
         {
-            _dbContext.Set<Cafe>().Remove(cafe);
+            _dbContext.Cafes.Remove(cafe);
         }
 
-        public void Delete(int id)
+        public void SaveChanges()
         {
-            throw new NotImplementedException();
+            _dbContext.SaveChanges();
         }
-
-        public IEnumerable<Cafe> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        // Implementa otros métodos de repositorio
     }
 }

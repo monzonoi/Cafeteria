@@ -1,4 +1,7 @@
 ﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=cafeteriadb.db"
+  },
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,

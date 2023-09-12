@@ -16,23 +16,43 @@ namespace Cafeteria.API.Controllers
             _cafeService = cafeService;
         }
 
-        // Implementa acciones para interactuar con ICafeService
-
-        // Endpoint para obtener todos los cafés
-        [HttpGet(Name = "GetAllCafes")]        
-        public ActionResult<IEnumerable<Cafe>> GetAllCafes()
+        [HttpGet]
+        public IActionResult GetAllCafes()
         {
             var cafes = _cafeService.GetAll();
             return Ok(cafes);
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetCafeById(int id)
+        {
+            var cafe = _cafeService.GetById(id);
+            if (cafe == null)
+            {
+                return NotFound();
+            }
+            return Ok(cafe);
+        }
 
-        //// Endpoint para obtener todos los cafés
-        //[HttpGet(Name = "GetById")]
-        //public ActionResult<Cafe> GetById()
-        //{
-        //    var cafes = _cafeService.GetAll().FirstOrDefault();
-        //    return Ok(cafes);
-        //}
+        [HttpPost]
+        public IActionResult CreateCafe([FromBody] Cafe cafe)
+        {
+            _cafeService.Create(cafe);
+            return CreatedAtAction(nameof(GetCafeById), new { id = cafe.Id }, cafe);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCafe(int id, [FromBody] Cafe cafe)
+        {
+            _cafeService.Update(id, cafe);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCafe(int id)
+        {
+            _cafeService.Delete(id);
+            return NoContent();
+        }
     }
 }

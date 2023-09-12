@@ -2,6 +2,7 @@
 using Cafeteria.Application; // Asegúrate de importar el espacio de nombres de la aplicación
 using Cafeteria.Application.Service;
 using Cafeteria.Domain;
+using System.Net;
 
 namespace Cafeteria.API.Controllers
 {
@@ -16,43 +17,129 @@ namespace Cafeteria.API.Controllers
             _cafeService = cafeService;
         }
 
-        [HttpGet]
-        public IActionResult GetAllCafes()
-        {
-            var cafes = _cafeService.GetAll();
-            return Ok(cafes);
-        }
-
         [HttpGet("{id}")]
         public IActionResult GetCafeById(int id)
         {
-            var cafe = _cafeService.GetById(id);
-            if (cafe == null)
+            try
             {
-                return NotFound();
+                var cafe = _cafeService.GetById(id);
+                if (cafe == null)
+                {
+                    var errorResponse = new ErrorResponse
+                    {
+                        Message = "El café no fue encontrado.",
+                        StatusCode = (int)HttpStatusCode.NotFound
+                    };
+                    return NotFound(errorResponse);
+                }
+                return Ok(cafe);
             }
-            return Ok(cafe);
+            catch (Exception ex)
+            {
+                // Registra la excepción
+                Console.WriteLine($"Error: {ex.Message}");
+
+                var errorResponse = new ErrorResponse
+                {
+                    Message = "Ocurrió un error interno en el servidor.",
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+
+                return StatusCode(errorResponse.StatusCode, errorResponse);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetAllCafes()
+        {
+            try
+            {
+                var cafes = _cafeService.GetAll();
+                return Ok(cafes);
+            }
+            catch (Exception ex)
+            {
+                // Registra la excepción
+                Console.WriteLine($"Error: {ex.Message}");
+
+                var errorResponse = new ErrorResponse
+                {
+                    Message = "Ocurrió un error interno en el servidor.",
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+
+                return StatusCode(errorResponse.StatusCode, errorResponse);
+            }
         }
 
         [HttpPost]
         public IActionResult CreateCafe([FromBody] Cafe cafe)
         {
-            _cafeService.Create(cafe);
-            return CreatedAtAction(nameof(GetCafeById), new { id = cafe.Id }, cafe);
+            try
+            {
+                _cafeService.Create(cafe);
+                return CreatedAtAction(nameof(GetCafeById), new { id = cafe.Id }, cafe);
+            }
+            catch (Exception ex)
+            {
+                // Registra la excepción
+                Console.WriteLine($"Error: {ex.Message}");
+
+                var errorResponse = new ErrorResponse
+                {
+                    Message = "Ocurrió un error interno en el servidor.",
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+
+                return StatusCode(errorResponse.StatusCode, errorResponse);
+            }
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateCafe(int id, [FromBody] Cafe cafe)
         {
-            _cafeService.Update(id, cafe);
-            return NoContent();
+            try
+            {
+                _cafeService.Update(id, cafe);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Registra la excepción
+                Console.WriteLine($"Error: {ex.Message}");
+
+                var errorResponse = new ErrorResponse
+                {
+                    Message = "Ocurrió un error interno en el servidor.",
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+
+                return StatusCode(errorResponse.StatusCode, errorResponse);
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteCafe(int id)
         {
-            _cafeService.Delete(id);
-            return NoContent();
+            try
+            {
+                _cafeService.Delete(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Registra la excepción
+                Console.WriteLine($"Error: {ex.Message}");
+
+                var errorResponse = new ErrorResponse
+                {
+                    Message = "Ocurrió un error interno en el servidor.",
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+
+                return StatusCode(errorResponse.StatusCode, errorResponse);
+            }
         }
+
     }
 }

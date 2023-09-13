@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Cafeteria.Application.Dtos;
 
 namespace Cafeteria.Application.Service
 {
@@ -19,26 +20,32 @@ namespace Cafeteria.Application.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<MateriaPrima>> ObtenerTodasLasMateriasPrimasAsync()
+        public async Task<IEnumerable<MateriaPrimaDto>> ObtenerTodasLasMateriasPrimasAsync()
         {
             var materiasPrimas = await _materiaPrimaRepository.ObtenerTodasAsync();
             // Mapear las materias primas a MateriaPrimaDto según sea necesario
             //var materiaPrimaDtos = materiasPrimas.Select(MapToMateriaPrimaDto);
-            return materiasPrimas;
+
+            var materiaPrimaDtos = from c in materiasPrimas
+                               select MapToMateriaPrimaDto(c);
+
+
+
+            return materiaPrimaDtos;
         }
 
-        public async Task<MateriaPrima> ObtenerMateriaPrimaPorIdAsync(int materiaPrimaId)
+        public async Task<MateriaPrimaDto> ObtenerMateriaPrimaPorIdAsync(int materiaPrimaId)
         {
             var materiaPrima = await _materiaPrimaRepository.ObtenerPorIdAsync(materiaPrimaId);
             // Mapear la materia prima a MateriaPrimaDto según sea necesario
-            //var materiaPrimaDto = MapToMateriaPrimaDto(materiaPrima);
-            return materiaPrima;
+            var materiaPrimaDto = MapToMateriaPrimaDto(materiaPrima);
+            return materiaPrimaDto;
         }
 
-        public async Task<int> CrearMateriaPrimaAsync(MateriaPrima materiaPrima)
+        public async Task<int> CrearMateriaPrimaAsync(MateriaPrimaDto materiaPrimadto)
         {
             // Mapear MateriaPrimaDto a una entidad MateriaPrima si es necesario
-            //var materiaPrima = MapToMateriaPrima(materiaPrima);
+            var materiaPrima = MapToMateriaPrima(materiaPrimadto);
 
             await _materiaPrimaRepository.AgregarAsync(materiaPrima);
             await _unitOfWork.CommitAsync(); // Guardar cambios en la base de datos
@@ -46,7 +53,7 @@ namespace Cafeteria.Application.Service
             return materiaPrima.Id; // Devuelve el ID de la materia prima recién creada
         }
 
-        public async Task ActualizarMateriaPrimaAsync(int materiaPrimaId, MateriaPrima materiaPrima)
+        public async Task ActualizarMateriaPrimaAsync(int materiaPrimaId, MateriaPrimaDto materiaPrima)
         {
             var materiaPrimaExistente = await _materiaPrimaRepository.ObtenerPorIdAsync(materiaPrimaId);
             if (materiaPrimaExistente == null)
@@ -67,26 +74,27 @@ namespace Cafeteria.Application.Service
             await _unitOfWork.CommitAsync(); // Guardar cambios en la base de datos
         }
 
-        //// Métodos de mapeo entre entidades y DTOs si es necesario
-        //private MateriaPrima MapToMateriaPrimaDto(MateriaPrima materiaPrima)
-        //{
-        //    return new MateriaPrima
-        //    {
-        //        Id = materiaPrima.Id,
-        //        Nombre = materiaPrima.Nombre,
-        //        // Mapear otras propiedades si es necesario
-        //    };
-        //}
+        // Métodos de mapeo entre entidades y DTOs si es necesario
+        private MateriaPrimaDto MapToMateriaPrimaDto(MateriaPrima materiaPrima)
+        {
+            return new MateriaPrimaDto
+            {
+                Id = materiaPrima.Id,
+                Nombre = materiaPrima.Nombre,
+                // Mapear otras propiedades si es necesario
+            };
+        }
 
-        //private MateriaPrima MapToMateriaPrima(MateriaPrimaDto materiaPrimaDto)
-        //{
-        //    return new MateriaPrima
-        //    {
-        //        Id = materiaPrimaDto.Id,
-        //        Nombre = materiaPrimaDto.Nombre,
-        //        // Mapear otras propiedades si es necesario
-        //    };
-        //}
+        private MateriaPrima MapToMateriaPrima(MateriaPrimaDto materiaPrimaDto)
+        {
+            return new MateriaPrima
+            {
+                Id = materiaPrimaDto.Id,
+                Nombre = materiaPrimaDto.Nombre,
+                // Mapear otras propiedades si es necesario
+            };
+        }
+ 
     }
 
 }

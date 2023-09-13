@@ -17,5 +17,6 @@ namespace Cafeteria.Domain.Entidad
 
         // Propiedad de navegación inversa para representar la relación con Café
         public List<Cafe> Cafes { get; set; }
+        public decimal Cantidad { get; set; }
     }
 }

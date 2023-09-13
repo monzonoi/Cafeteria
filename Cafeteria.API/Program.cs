@@ -20,29 +20,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Configuración de UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IPedidoService, PedidoService>();
-builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 
 // Configuración de los repositorios
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IComandaRepository, ComandaRepository>();
 builder.Services.AddScoped<IMateriaPrimaRepository, MateriaPrimaRepository>();
-// Agrega otros repositorios aquí
+builder.Services.AddScoped<ICafeRepository, CafeRepository>();
+
 
 // Otras configuraciones de servicios
-builder.Services.AddScoped<ICafeRepository, CafeRepository>();
+builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<ICafeService, CafeService>();
-
-
-
-
-// Configuración de los servicios de aplicación
 builder.Services.AddScoped<IComandaService, ComandaService>();
 builder.Services.AddScoped<IMateriaPrimaService, MateriaPrimaService>();
+
+
+
 // Agrega otros servicios de aplicación aquí
 
-// Configuración de AutoMapper si lo estás utilizando para mapear entidades a DTOs
 
-// Configuración de otros servicios y middleware de tu aplicación
 
 
 builder.Services.AddControllers();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cafeteria.Domain.Entidad;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,25 +9,18 @@ namespace Cafeteria.Domain
 {
     public class Factura
     {
-        public int Id { get; private set; }
-        public DateTime Fecha { get; private set; }
-        public string Numero { get; private set; }
-        public List<DetalleFactura> Detalles { get; private set; }
+        public int Id { get; set; }
+        public int PedidoId { get; set; } // Clave externa para el pedido asociado
+        public DateTime FechaFacturacion { get; set; }
+        public decimal Total { get; set; }
 
-        // Constructor privado para la creación de nuevas facturas
-        private Factura() { }
+        // Propiedad de navegación para el pedido asociado
+        public Pedido Pedido { get; set; }
 
-        public Factura(DateTime fecha, string numero)
-        {
-            Fecha = fecha;
-            Numero = numero;
-            Detalles = new List<DetalleFactura>();
-        }
+        // Colección de detalles de factura
+        public List<DetalleFactura> Detalles { get; set; }
 
-        public void AgregarDetalle(string descripcion, decimal precio, int cantidad)
-        {
-            // Realiza las validaciones necesarias antes de agregar un detalle
-            Detalles.Add(new DetalleFactura(descripcion, precio, cantidad));
-        }
+        // Otras propiedades y métodos si es necesario
     }
+
 }

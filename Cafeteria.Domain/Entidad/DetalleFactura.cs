@@ -8,19 +8,18 @@ namespace Cafeteria.Domain
 {
     public class DetalleFactura
     {
-        public int Id { get; private set; }
-        public string Descripcion { get; private set; }
-        public decimal Precio { get; private set; }
-        public int Cantidad { get; private set; }
+        public int Id { get; set; }
+        public int FacturaId { get; set; } // Clave externa para la factura a la que pertenece este detalle
+        public int CafeId { get; set; } // Clave externa para el café vendido
+        public int Cantidad { get; set; }
+        public decimal PrecioUnitario { get; set; }
 
-        // Constructor privado para Entity Framework Core
-        private DetalleFactura() { }
+        // Propiedad de navegación para la factura a la que pertenece este detalle
+        public Factura Factura { get; set; }
 
-        public DetalleFactura(string descripcion, decimal precio, int cantidad)
-        {
-            Descripcion = descripcion;
-            Precio = precio;
-            Cantidad = cantidad;
-        }
+        // Propiedad de navegación para el café vendido
+        public Cafe Cafe { get; set; }
+
+        // Otras propiedades y métodos si es necesario
     }
 }

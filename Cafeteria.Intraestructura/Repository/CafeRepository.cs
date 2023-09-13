@@ -14,44 +14,54 @@ using Cafe = Cafeteria.Domain.Cafe;
 
 namespace Cafeteria.Intraestructura.Repository
 {
-   
+
     public class CafeRepository : ICafeRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _context;
 
-        public CafeRepository(ApplicationDbContext dbContext)
+        public CafeRepository(ApplicationDbContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
         }
 
-        public IEnumerable<Cafe> GetAll()
+        public async Task<IEnumerable<Cafe>> ObtenerTodosAsync()
         {
-            return _dbContext.Cafes.ToList();
+            return await _context.Cafes.ToListAsync();
         }
 
-        public Cafe GetById(int id)
+        public async Task<Cafe> ObtenerPorIdAsync(int id)
         {
-            return _dbContext.Cafes.Find(id);
+            return await _context.Cafes.FindAsync(id);
         }
 
-        public void Add(Cafe cafe)
+        public async Task AgregarAsync(Cafe cafe)
         {
-            _dbContext.Cafes.Add(cafe);
+            if (cafe == null)
+            {
+                throw new ArgumentNullException(nameof(cafe));
+            }
+
+            await _context.Cafes.AddAsync(cafe);
         }
 
-        public void Update(Cafe cafe)
+        public async Task ActualizarAsync(Cafe cafe)
         {
-            _dbContext.Entry(cafe).State = EntityState.Modified;
+            if (cafe == null)
+            {
+                throw new ArgumentNullException(nameof(cafe));
+            }
+
+            _context.Entry(cafe).State = EntityState.Modified;
         }
 
-        public void Remove(Cafe cafe)
+        public void Eliminar(Cafe cafe)
         {
-            _dbContext.Cafes.Remove(cafe);
-        }
+            if (cafe == null)
+            {
+                throw new ArgumentNullException(nameof(cafe));
+            }
 
-        public void SaveChanges()
-        {
-            _dbContext.SaveChanges();
+            _context.Cafes.Remove(cafe);
         }
     }
 }

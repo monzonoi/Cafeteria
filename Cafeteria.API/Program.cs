@@ -17,9 +17,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 
-// Otras configuraciones de servicios
-builder.Services.AddScoped<ICafeRepository, CafeRepository>();
-builder.Services.AddScoped<ICafeService, CafeService>();
+// Configuración de UnitOfWork
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
@@ -29,8 +28,12 @@ builder.Services.AddScoped<IComandaRepository, ComandaRepository>();
 builder.Services.AddScoped<IMateriaPrimaRepository, MateriaPrimaRepository>();
 // Agrega otros repositorios aquí
 
-// Configuración de UnitOfWork
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// Otras configuraciones de servicios
+builder.Services.AddScoped<ICafeRepository, CafeRepository>();
+builder.Services.AddScoped<ICafeService, CafeService>();
+
+
+
 
 // Configuración de los servicios de aplicación
 builder.Services.AddScoped<IComandaService, ComandaService>();

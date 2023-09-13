@@ -9,12 +9,10 @@ namespace Cafeteria.Domain
 {
     public interface ICafeRepository
     {
-        Cafe GetById(int id);
-        void Add(Cafe cafe);
-        void Update(Cafe cafe);
-        void Remove(Cafe cafe);    
-        IEnumerable<Cafe> GetAll();
-        // Otros métodos de repositorio
-        void SaveChanges();
+        Task<IEnumerable<Cafe>> ObtenerTodosAsync();
+        Task<Cafe> ObtenerPorIdAsync(int id);
+        Task AgregarAsync(Cafe cafe);
+        Task ActualizarAsync(Cafe cafe);
+        void Eliminar(Cafe cafe);
     }
 }

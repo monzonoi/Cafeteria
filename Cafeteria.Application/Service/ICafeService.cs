@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cafeteria.Application.Dtos;
 using Cafeteria.Domain; // Asegúrate de importar el espacio de nombres del dominio
 
 
@@ -6,11 +7,10 @@ namespace Cafeteria.Application.Service
 {
     public interface ICafeService
     {
-        Cafe GetById(int id);
-        void Create(Cafe cafe);
-        void Update(int id, Cafe cafe);
-        void Delete(int id);
-        IEnumerable<Cafe> GetAll();
-        // Puedes agregar otros métodos relacionados con la gestión de cafés
+        Task<IEnumerable<CafeDto>> ObtenerTodosLosCafesAsync();
+        Task<CafeDto> ObtenerCafePorIdAsync(int cafeId);
+        Task<int> CrearCafeAsync(CafeDto cafeDto);
+        Task ActualizarCafeAsync(int cafeId, CafeDto cafeDto);
+        Task EliminarCafeAsync(int cafeId);
     }
 }

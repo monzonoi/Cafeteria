@@ -1,4 +1,5 @@
-﻿using Cafeteria.Domain.Entidad;
+﻿using Cafeteria.Application.Dtos;
+using Cafeteria.Domain.Entidad;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace Cafeteria.Application.Service
 {
     public interface IComandaService
     {
-        Task<IEnumerable<Comanda>> ObtenerComandasAsync();
-        Task<Comanda> ObtenerComandaPorIdAsync(int comandaId);
-        Task<int> CrearComandaAsync(int pedidoId);
+        Task<IEnumerable<ComandaDto>> ObtenerTodasLasComandasAsync();
+        Task<ComandaDto> ObtenerComandaPorIdAsync(int id);
+        Task<int> CrearComandaAsync(ComandaDto comandaDto);
+        Task ActualizarComandaAsync(int id, ComandaDto comandaDto);
+        Task EliminarComandaAsync(int id);
     }
 
 }

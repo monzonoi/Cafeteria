@@ -26,6 +26,7 @@ builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IComandaRepository, ComandaRepository>();
 builder.Services.AddScoped<IMateriaPrimaRepository, MateriaPrimaRepository>();
 builder.Services.AddScoped<ICafeRepository, CafeRepository>();
+builder.Services.AddScoped<IFacturaRepository, FacturaRepository>();
 
 
 // Otras configuraciones de servicios
@@ -33,7 +34,7 @@ builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<ICafeService, CafeService>();
 builder.Services.AddScoped<IComandaService, ComandaService>();
 builder.Services.AddScoped<IMateriaPrimaService, MateriaPrimaService>();
-
+builder.Services.AddScoped<IFacturacionService, FacturacionService>();
 
 
 // Agrega otros servicios de aplicación aquí

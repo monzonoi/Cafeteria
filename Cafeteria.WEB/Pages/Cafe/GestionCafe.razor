@@ -1,0 +1,107 @@
+﻿@page "/gestioncafe"
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient HttpClient
+@using Cafeteria.WEB.Modelos;
+@using Cafeteria.WEB.Servicios;
+@inject CafeService cafeService
+
+<h3>GestionCafe</h3>
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cafe in cafes)
+        {
+            <tr>
+                <td>
+                    <CafeEdit @bind="cafe" OnCafeChanged="ActualizarCafe" />
+                </td>
+                <td>
+                    @if (cafe.Id == 0 || !modoEdicion)
+                    {
+                        @cafe.Precio
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-primary" @onclick="() => EditarCafe(cafe)">Editar</button>
+                    <button class="btn btn-danger" @onclick="() => EliminarCafe(cafe)">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@code {
+ 
+    private List<Cafe> cafes = new List<Cafe>();
+    private Cafe cafeSeleccionado;
+    private string busqueda = "";
+    private bool modoEdicion = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cafes = await cafeService.GetCafesAsync();
+    }
+
+    private async Task EditarCafe(Cafe cafe)
+    {
+        // Asigna el café seleccionado para edición
+        cafeSeleccionado = cafe;
+        // Abre el modal de edición
+       // ((IJSObjectReference)await JSRuntime.InvokeAsync<IJSObjectReference>("mostrarModal", "editarCafeModal")).Dispose();
+    }
+
+
+    private async Task MostrarModalNuevoCafe()
+    {
+        // Inicializa un nuevo café en blanco o como prefieras
+        cafeSeleccionado = new Cafe();
+        // Abre el modal de creación
+        //((IJSObjectReference)await JSRuntime.InvokeAsync<IJSObjectReference>("mostrarModal", "editarCafeModal")).Dispose();
+    }
+
+
+    private async Task ObtenerCafes()
+    {
+        cafes = await HttpClient.GetFromJsonAsync<List<Cafe>>("api/cafe");
+    }
+
+    private void FiltrarCafes()
+    {
+        // Filtrar la lista de cafés según la variable "busqueda"
+        // Actualizar la lista de cafés mostrados en la tabla
+        
+    }
+
+    private void BuscarCafes()
+    {
+        // Llama a un método para buscar cafés que cumplan con el término de búsqueda
+        FiltrarCafes();
+    }
+
+    
+
+    private void EliminarCafe(Cafe cafe)
+    {
+        // Llama a la API para eliminar el café
+        // Después, actualiza la lista de cafés
+    }
+
+    private void AgregarNuevoCafe()
+    {
+        // Redirige a una página de formulario de agregar café o muestra un formulario en la misma página
+    }
+
+    
+
+}

@@ -1,5 +1,6 @@
 using Cafeteria.WEB.Areas.Identity;
 using Cafeteria.WEB.Data;
+using Cafeteria.WEB.Servicios;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -20,6 +21,15 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddHttpClient<CafeService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["AppSettings:ApiBaseUrl"]); 
+});
+
 
 var app = builder.Build();
 

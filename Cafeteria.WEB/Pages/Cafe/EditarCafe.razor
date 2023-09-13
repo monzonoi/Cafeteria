@@ -1,0 +1,57 @@
+﻿@using Cafeteria.WEB.Modelos;
+<!-- CafeEdit.razor -->
+@if (modoEdicion)
+{
+    <!-- Modo Edición -->
+    <form>
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" @bind="cafe.Nombre" />
+        </div>
+        <div class="form-group">
+            <label for="precio">Precio:</label>
+            <input type="number" class="form-control" id="precio" @bind="cafe.Precio" />
+        </div>
+        <button class="btn btn-success" @onclick="GuardarCafe">Guardar</button>
+        <button class="btn btn-secondary" @onclick="CancelarEdicion">Cancelar</button>
+    </form>
+}
+else
+{
+    <!-- Modo Visualización -->
+    <div>
+        <span>@cafe.Nombre</span>
+        <span>@cafe.Precio</span>
+        <button class="btn btn-primary" @onclick="Editar">Editar</button>
+        <button class="btn btn-danger" @onclick="EliminarCafe">Eliminar</button>
+    </div>
+}
+
+@code {
+    private bool modoEdicion = false;
+    private Cafe cafe = new Cafe();
+
+    private void Editar()
+    {
+        // Cambiar al modo de edición
+        modoEdicion = true;
+    }
+
+    private void CancelarEdicion()
+    {
+        // Cancelar la edición y volver al modo de visualización
+        modoEdicion = false;
+    }
+
+    private void GuardarCafe()
+    {
+        // Guardar los cambios en el café y volver al modo de visualización
+        modoEdicion = false;
+        // Llamar al servicio para guardar el café en la base de datos
+    }
+
+    private void EliminarCafe()
+    {
+        // Eliminar el café (implementar según tus necesidades)
+    }
+}

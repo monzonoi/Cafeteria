@@ -1,4 +1,6 @@
-﻿using Cafeteria.Application.Enum;
+﻿
+
+using Cafeteria.Domain.Entidad;
 
 namespace Cafeteria.Application.Dtos
 {

@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Cafeteria.Domain\Cafeteria.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enum\" />
+  </ItemGroup>
+
 </Project>

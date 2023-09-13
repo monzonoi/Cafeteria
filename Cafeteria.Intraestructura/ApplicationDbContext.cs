@@ -26,5 +26,29 @@ namespace Cafeteria.Intraestructura
         public DbSet<DetalleFactura> DetallesFactura { get; set; }
 
 
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Comanda>()
+            .HasMany(c => c.Pedidos)
+            .WithOne(p => p.Comanda)
+            .HasForeignKey(p => p.ComandaId);
+
+            modelBuilder.Entity<Comanda>()
+                .HasOne(c => c.Factura)
+                .WithOne(f => f.Comanda)
+                .HasForeignKey<Factura>(f => f.ComandaId);
+
+            modelBuilder.Entity<Factura>()
+                .HasMany(f => f.Detalles)
+                .WithOne(d => d.Factura)
+                .HasForeignKey(d => d.FacturaId);
+
+            // Otras configuraciones y relaciones
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
+
 }

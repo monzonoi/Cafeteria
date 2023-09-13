@@ -6,24 +6,23 @@ using System.Threading.Tasks;
 
 namespace Cafeteria.Domain.Entidad
 {
+    public enum EstadoPedido
+    {
+        Borrador,
+        Pendiente,
+        Procesando,
+        PendienteFacturacion
+    }
 
     public class Pedido
     {
         public int Id { get; set; }
-        public int UsuarioId { get; set; } // Clave externa para el usuario que realizó el pedido
-        public DateTime FechaCreacion { get; set; }
-        public string Estado { get; set; }
-        public int ComandaId { get; set; } // Clave externa para la comanda asociada
-
-        // Propiedad de navegación para el usuario
-        public Usuario Usuario { get; set; }
-
-        // Propiedad de navegación para la comanda
-        public Comanda Comanda { get; set; }
-
-        // Colección de ítems de pedido
-        public List<ItemPedido> Items { get; set; }
-
-        // Otras propiedades y métodos si es necesario
+        public int ComandaId { get; set; }
+        public Comanda Comanda { get; set; } // Propiedad de navegación a Comanda
+        public int CafeId { get; set; }
+        public Cafe Cafe { get; set; } // Propiedad de navegación a Cafe
+        public int Cantidad { get; set; }
+        public EstadoPedido Estado { get; set; }
+        // Otras propiedades y métodos
     }
 }

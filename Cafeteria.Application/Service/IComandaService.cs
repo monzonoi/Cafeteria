@@ -10,6 +10,7 @@ namespace Cafeteria.Application.Service
 {
     public interface IComandaService
     {
+        Task CambiarEstadoComandaAsync(int comandaId, EstadoComanda nuevoEstado);
         Task<IEnumerable<ComandaDto>> ObtenerTodasLasComandasAsync();
         Task<ComandaDto> ObtenerComandaPorIdAsync(int id);
         Task<int> CrearComandaAsync(ComandaDto comandaDto);

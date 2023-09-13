@@ -3,6 +3,7 @@ using System;
 using Cafeteria.Intraestructura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cafeteria.Intraestructura.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230913200533_cambiosentidadcomanda")]
+    partial class cambiosentidadcomanda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.22");
@@ -63,6 +65,9 @@ namespace Cafeteria.Intraestructura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CafeId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Cantidad")
                         .HasColumnType("INTEGER");
 
@@ -73,6 +78,8 @@ namespace Cafeteria.Intraestructura.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CafeId");
 
                     b.HasIndex("FacturaId");
 
@@ -149,23 +156,24 @@ namespace Cafeteria.Intraestructura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CafeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ComandaId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Estado")
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CafeId");
-
                     b.HasIndex("ComandaId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Pedidos");
                 });
@@ -195,9 +203,6 @@ namespace Cafeteria.Intraestructura.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ComandaId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("FechaFacturacion")
                         .HasColumnType("TEXT");
 
@@ -209,8 +214,7 @@ namespace Cafeteria.Intraestructura.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ComandaId")
-                        .IsUnique();
+                    b.HasIndex("PedidoId");
 
                     b.ToTable("Facturas");
                 });
@@ -232,11 +236,19 @@ namespace Cafeteria.Intraestructura.Migrations
 
             modelBuilder.Entity("Cafeteria.Domain.DetalleFactura", b =>
                 {
+                    b.HasOne("Cafeteria.Domain.Cafe", "Cafe")
+                        .WithMany()
+                        .HasForeignKey("CafeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Cafeteria.Domain.Factura", "Factura")
                         .WithMany("Detalles")
                         .HasForeignKey("FacturaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cafe");
 
                     b.Navigation("Factura");
                 });
@@ -261,7 +273,7 @@ namespace Cafeteria.Intraestructura.Migrations
                         .IsRequired();
 
                     b.HasOne("Cafeteria.Domain.Entidad.Pedido", "Pedido")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("PedidoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -273,40 +285,42 @@ namespace Cafeteria.Intraestructura.Migrations
 
             modelBuilder.Entity("Cafeteria.Domain.Entidad.Pedido", b =>
                 {
-                    b.HasOne("Cafeteria.Domain.Cafe", "Cafe")
-                        .WithMany()
-                        .HasForeignKey("CafeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Cafeteria.Domain.Entidad.Comanda", "Comanda")
                         .WithMany("Pedidos")
                         .HasForeignKey("ComandaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cafe");
-
-                    b.Navigation("Comanda");
-                });
-
-            modelBuilder.Entity("Cafeteria.Domain.Factura", b =>
-                {
-                    b.HasOne("Cafeteria.Domain.Entidad.Comanda", "Comanda")
-                        .WithOne("Factura")
-                        .HasForeignKey("Cafeteria.Domain.Factura", "ComandaId")
+                    b.HasOne("Cafeteria.Domain.Entidad.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Comanda");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Cafeteria.Domain.Factura", b =>
+                {
+                    b.HasOne("Cafeteria.Domain.Entidad.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
                 });
 
             modelBuilder.Entity("Cafeteria.Domain.Entidad.Comanda", b =>
                 {
-                    b.Navigation("Factura")
-                        .IsRequired();
-
                     b.Navigation("Pedidos");
+                });
+
+            modelBuilder.Entity("Cafeteria.Domain.Entidad.Pedido", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Cafeteria.Domain.Factura", b =>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Cafeteria.Application.Dtos;
 using SendGrid.Helpers.Errors.Model;
+using EstadoComanda = Cafeteria.Domain.Entidad.EstadoComanda;
 
 namespace Cafeteria.Application.Service
 {
@@ -21,6 +22,26 @@ namespace Cafeteria.Application.Service
             _pedidoRepository = pedidoRepository;
             _comandaRepository = comandaRepository;
             _unitOfWork = unitOfWork;
+        }
+
+
+        public async Task CambiarEstadoComandaAsync(int comandaId, EstadoComanda nuevoEstado)
+        {
+            var comanda = await _comandaRepository.ObtenerPorIdAsync(comandaId);
+
+            if (comanda == null)
+            {
+                throw new NotFoundException("La comanda no fue encontrada.");
+            }
+
+            // Realiza validaciones adicionales según tus reglas de negocio, por ejemplo, si un usuario tiene permiso para cambiar el estado.
+
+            // Aplica el cambio de estado.
+            comanda.Estado = nuevoEstado;
+
+            await _comandaRepository.ActualizarAsync(comanda);
+            // Guarda los cambios en el repositorio.
+            await _comandaRepository.ActualizarAsync(comanda);
         }
 
         public async Task<IEnumerable<ComandaDto>> ObtenerTodasLasComandasAsync()
@@ -42,8 +63,8 @@ namespace Cafeteria.Application.Service
         public async Task<int> CrearComandaAsync(ComandaDto comandaDto)
         {
             // Validar que el pedido existe y está en el estado adecuado para crear una comanda
-            var pedido = await _pedidoRepository.ObtenerPorIdAsync(comandaDto.PedidoId);
-            if (pedido == null || pedido.Estado != "Pendiente")
+            var pedido = await _pedidoRepository.ObtenerPorIdAsync(comandaDto.Pedidos.FirstOrDefault());
+            if (pedido == null || pedido.Estado != EstadoPedido.Pendiente)
             {
                 throw new ApplicationException("El pedido no es válido para crear una comanda.");
             }
@@ -51,7 +72,7 @@ namespace Cafeteria.Application.Service
             // Crea la comanda
             var comanda = new Comanda
             {
-                PedidoId = pedido.Id,
+                Pedidos = new Pedido[] { new Pedido { Id = pedido.Id} },
                 FechaCreacion = DateTime.Now
                 // Otras propiedades de la comanda si es necesario
             };
@@ -68,7 +89,7 @@ namespace Cafeteria.Application.Service
             return new ComandaDto
             {
                 Id = comanda.Id,
-                PedidoId = comanda.PedidoId,
+                Pedidos = comanda.Pedidos.Select(s => s.Id).ToList(),
                 FechaCreacion = comanda.FechaCreacion
                 // Mapear otras propiedades si es necesario
             };

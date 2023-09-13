@@ -21,14 +21,14 @@ namespace Cafeteria.Intraestructura.Repository
         public async Task<Pedido> ObtenerPorIdAsync(int pedidoId)
         {
             return await _dbContext.Pedidos
-                .Include(p => p.Items) // Incluir ítems de pedido
+                //.Include(p => p.Items) // Incluir ítems de pedido
                 .SingleOrDefaultAsync(p => p.Id == pedidoId);
         }
 
         public async Task<IEnumerable<Pedido>> ObtenerTodosAsync()
         {
             return await _dbContext.Pedidos
-                .Include(p => p.Items) // Incluir ítems de pedido
+                //.Include(p => p.Items) // Incluir ítems de pedido
                 .ToListAsync();
         }
 

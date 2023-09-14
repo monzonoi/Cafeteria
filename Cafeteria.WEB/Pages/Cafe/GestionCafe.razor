@@ -1,15 +1,14 @@
-﻿@page "/gestioncafe"
-@using System.Net.Http
-@using System.Net.Http.Json
-@inject HttpClient HttpClient
-@using Cafeteria.WEB.Modelos;
-@using Cafeteria.WEB.Servicios;
-@inject CafeService cafeService
+﻿@page "/gestioncafes"
+@using Cafeteria.WEB.Models
+@using Cafeteria.WEB.Servicios
+@inject CafeService CafeService
 
-<h3>GestionCafe</h3>
+<h1>Gestión de Cafés</h1>
 
+<button class="btn btn-primary" @onclick="MostrarFormularioNuevo">Nuevo Café</button>
 
-<table class="table table-bordered table-striped">
+<!-- Listado de Cafés -->
+<table class="table">
     <thead>
         <tr>
             <th>Nombre</th>
@@ -21,17 +20,10 @@
         @foreach (var cafe in cafes)
         {
             <tr>
+                <td>@cafe.Nombre</td>
+                <td>@cafe.Precio</td>
                 <td>
-                    <CafeEdit @bind="cafe" OnCafeChanged="ActualizarCafe" />
-                </td>
-                <td>
-                    @if (cafe.Id == 0 || !modoEdicion)
-                    {
-                        @cafe.Precio
-                    }
-                </td>
-                <td>
-                    <button class="btn btn-primary" @onclick="() => EditarCafe(cafe)">Editar</button>
+                    <button class="btn btn-info" @onclick="() => MostrarFormularioEdicion(cafe)">Editar</button>
                     <button class="btn btn-danger" @onclick="() => EliminarCafe(cafe)">Eliminar</button>
                 </td>
             </tr>
@@ -39,69 +31,84 @@
     </tbody>
 </table>
 
-
+<!-- Formulario de Edición/Creación -->
+@if (mostrarFormulario)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@tituloFormulario</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarFormulario"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input class="form-control" id="nombre" @bind="cafeEdit.Nombre" />
+                    </div>
+                    <div class="form-group">
+                        <label for="precio">Precio</label>
+                        <input type="number" class="form-control" id="precio" @bind="cafeEdit.Precio" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CerrarFormulario">Cancelar</button>
+                    <button class="btn btn-primary" @onclick="GuardarCafe">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
- 
     private List<Cafe> cafes = new List<Cafe>();
-    private Cafe cafeSeleccionado;
-    private string busqueda = "";
-    private bool modoEdicion = false;
+    private Cafe cafeEdit = new Cafe();
+    private bool mostrarFormulario = false;
+    private string tituloFormulario = "";
 
     protected override async Task OnInitializedAsync()
     {
-        cafes = await cafeService.GetCafesAsync();
+        cafes = await CafeService.ObtenerCafesAsync();
     }
 
-    private async Task EditarCafe(Cafe cafe)
+    private void MostrarFormularioNuevo()
     {
-        // Asigna el café seleccionado para edición
-        cafeSeleccionado = cafe;
-        // Abre el modal de edición
-       // ((IJSObjectReference)await JSRuntime.InvokeAsync<IJSObjectReference>("mostrarModal", "editarCafeModal")).Dispose();
+        cafeEdit = new Cafe();
+        tituloFormulario = "Nuevo Café";
+        mostrarFormulario = true;
     }
 
-
-    private async Task MostrarModalNuevoCafe()
+    private void MostrarFormularioEdicion(Cafe cafe)
     {
-        // Inicializa un nuevo café en blanco o como prefieras
-        cafeSeleccionado = new Cafe();
-        // Abre el modal de creación
-        //((IJSObjectReference)await JSRuntime.InvokeAsync<IJSObjectReference>("mostrarModal", "editarCafeModal")).Dispose();
+        cafeEdit = cafe;
+        tituloFormulario = "Editar Café";
+        mostrarFormulario = true;
     }
 
-
-    private async Task ObtenerCafes()
+    private async Task GuardarCafe()
     {
-        cafes = await HttpClient.GetFromJsonAsync<List<Cafe>>("api/cafe");
+        if (cafeEdit.Id == 0)
+        {
+            // Nuevo café
+            await CafeService.CrearCafeAsync(cafeEdit);
+        }
+        else
+        {
+            // Actualizar café existente
+            await CafeService.ActualizarCafeAsync(cafeEdit);
+        }
+        cafes = await CafeService.ObtenerCafesAsync();
+        mostrarFormulario = false;
     }
 
-    private void FiltrarCafes()
+    private async Task EliminarCafe(Cafe cafe)
     {
-        // Filtrar la lista de cafés según la variable "busqueda"
-        // Actualizar la lista de cafés mostrados en la tabla
-        
+        await CafeService.EliminarCafeAsync(cafe.Id);
+        cafes = await CafeService.ObtenerCafesAsync();
     }
 
-    private void BuscarCafes()
+    private void CerrarFormulario()
     {
-        // Llama a un método para buscar cafés que cumplan con el término de búsqueda
-        FiltrarCafes();
+        mostrarFormulario = false;
     }
-
-    
-
-    private void EliminarCafe(Cafe cafe)
-    {
-        // Llama a la API para eliminar el café
-        // Después, actualiza la lista de cafés
-    }
-
-    private void AgregarNuevoCafe()
-    {
-        // Redirige a una página de formulario de agregar café o muestra un formulario en la misma página
-    }
-
-    
-
 }

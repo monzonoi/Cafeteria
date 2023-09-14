@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cafeteria.API", "Cafeteria.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cafeteria.Intraestructura", "Cafeteria.Intraestructura\Cafeteria.Intraestructura.csproj", "{D127EC30-4468-44ED-B3C9-64A02A0B7697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cafeteria.WEB", "Cafeteria.WEB\Cafeteria.WEB.csproj", "{4BD230BD-FC40-441B-9D7E-F6EF3C66CDB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cafeteria.WEB", "Cafeteria.WEB\Cafeteria.WEB.csproj", "{4BD230BD-FC40-441B-9D7E-F6EF3C66CDB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

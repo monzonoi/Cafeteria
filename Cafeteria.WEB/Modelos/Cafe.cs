@@ -1,4 +1,4 @@
-﻿namespace Cafeteria.WEB.Modelos
+﻿namespace Cafeteria.WEB.Models
 {
     public class Cafe
     {

@@ -1,4 +1,4 @@
-﻿using Cafeteria.Domain.Entidad;
+﻿using Cafeteria.Domain.Entidades;
 using Cafeteria.Domain;
 using System;
 using System.Collections.Generic;
@@ -7,8 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Cafeteria.Application.Dtos;
 using SendGrid.Helpers.Errors.Model;
-using EstadoComanda = Cafeteria.Domain.Entidad.EstadoComanda;
-using Cafeteria.Intraestructura.Entidades;
+
 
 namespace Cafeteria.Application.Service
 {
@@ -29,7 +28,7 @@ namespace Cafeteria.Application.Service
         }
 
 
-        public async Task CambiarEstadoComandaAsync(int comandaId, EstadoComanda nuevoEstado)
+        public async Task CambiarEstadoComandaAsync(int comandaId, string nuevoEstado)
         {
             var comanda = await _comandaRepository.ObtenerPorIdAsync(comandaId);
 
@@ -68,7 +67,7 @@ namespace Cafeteria.Application.Service
         {
             // Validar que el pedido existe y está en el estado adecuado para crear una comanda
             var pedido = await _pedidoRepository.ObtenerPorIdAsync(comandaDto.Pedidos.FirstOrDefault());
-            if (pedido == null || pedido.Estado != EstadoPedido.Pendiente)
+            if (pedido == null || pedido.Estado != "pendiente")
             {
                 throw new ApplicationException("El pedido no es válido para crear una comanda.");
             }
@@ -76,7 +75,7 @@ namespace Cafeteria.Application.Service
             // Crea la comanda
             var comanda = new Comanda
             {
-                Pedidos = new Pedido[] { new Pedido { Id = pedido.Id} },
+                Pedidos = (new Pedido[] { new Pedido { Id = pedido.Id} }).ToList(),
                 FechaCreacion = DateTime.Now
                 // Otras propiedades de la comanda si es necesario
             };
@@ -137,8 +136,8 @@ namespace Cafeteria.Application.Service
 
             var comanda = new Comanda
             {
-                UsuarioId = usuario.Id,
-                Estado = EstadoComanda.Borrador, // La comanda se crea en estado "Borrador" inicialmente
+                Id = usuario.Id,
+                Estado = "borrador", // La comanda se crea en estado "Borrador" inicialmente
                 FechaCreacion = DateTime.Now
             };
 
@@ -196,7 +195,7 @@ namespace Cafeteria.Application.Service
             throw new NotImplementedException();
         }
 
-        public Task<ComandaDto> CambiarEstadoComandaAsync(int comandaId, EstadoComanda nuevoEstado, UsuarioDto usuario)
+        public Task<ComandaDto> CambiarEstadoComandaAsync(int comandaId, string nuevoEstado, UsuarioDto usuario)
         {
             throw new NotImplementedException();
         }

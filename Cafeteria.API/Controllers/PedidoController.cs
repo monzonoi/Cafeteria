@@ -1,6 +1,6 @@
 ﻿using Cafeteria.Application.Dtos;
 using Cafeteria.Application.Service;
-using Cafeteria.Domain.Entidad;
+using Cafeteria.Domain.Entidades;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cafeteria.API.Controllers

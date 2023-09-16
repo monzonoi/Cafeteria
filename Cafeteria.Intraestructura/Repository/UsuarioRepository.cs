@@ -1,5 +1,5 @@
 ﻿using Cafeteria.Domain;
-using Cafeteria.Domain.Entidad;
+using Cafeteria.Domain.Entidades;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

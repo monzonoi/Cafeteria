@@ -1,6 +1,6 @@
 ﻿using Cafeteria.Application.Dtos;
 using Cafeteria.Domain;
-using Cafeteria.Domain.Entidad;
+using Cafeteria.Domain.Entidades;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace Cafeteria.Application.Service
             var nuevoUsuario = new Usuario
             {
                 Nombre = usuarioDto.Nombre,
-                Rol = usuarioDto.Rol,
+                Rol = new Rol { Nombre = usuarioDto.Rol },
                 // Mapear otras propiedades desde el DTO
             };
 

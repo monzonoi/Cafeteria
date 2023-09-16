@@ -1,4 +1,4 @@
-﻿using Cafeteria.Domain.Entidad;
+﻿using Cafeteria.Domain.Entidades;
 using Cafeteria.Domain;
 using System;
 using System.Collections.Generic;

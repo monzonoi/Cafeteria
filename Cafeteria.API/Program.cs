@@ -1,20 +1,24 @@
 using Cafeteria.Application.Service;
 using Cafeteria.Domain;
-//using Cafeteria.Infrastructure;
-//using Cafeteria.Infrastructure.Repository;
 using Cafeteria.Intraestructura;
 using Cafeteria.Intraestructura.Repository;
 using Microsoft.EntityFrameworkCore;
-using Cafeteria.Domain;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//// Add services to the container.
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//{
+//    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+//});
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("Cafeteria.Intraestructura"))); // Aquí especificamos el ensamblado de migraciones
 
 
 // Configuración de UnitOfWork
@@ -25,17 +29,13 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IComandaRepository, ComandaRepository>();
 builder.Services.AddScoped<IMateriaPrimaRepository, MateriaPrimaRepository>();
-builder.Services.AddScoped<ICafeRepository, CafeRepository>();
-builder.Services.AddScoped<IFacturaRepository, FacturaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 
 // Otras configuraciones de servicios
 builder.Services.AddScoped<IPedidoService, PedidoService>();
-builder.Services.AddScoped<ICafeService, CafeService>();
 builder.Services.AddScoped<IComandaService, ComandaService>();
 builder.Services.AddScoped<IMateriaPrimaService, MateriaPrimaService>();
-builder.Services.AddScoped<IFacturacionService, FacturacionService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 

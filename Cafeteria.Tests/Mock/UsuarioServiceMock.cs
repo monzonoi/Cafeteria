@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cafeteria.Application.Service;
-using Cafeteria.Domain.Entidad;
+using Cafeteria.Domain.Entidades;
 
 namespace Cafeteria.Tests.Mock
 {

@@ -53,7 +53,7 @@ namespace Cafeteria.Application.Service
             var nuevoUsuario = new Usuario
             {
                 Nombre = usuarioDto.Nombre,
-                Rol = new Rol { Nombre = usuarioDto.Rol },
+                Rol = new Rol { Nombre = usuarioDto.Rol.Nombre, Id = usuarioDto.RolId },
                 // Mapear otras propiedades desde el DTO
             };
 
@@ -89,6 +89,21 @@ namespace Cafeteria.Application.Service
 
             _usuarioRepository.Eliminar(usuarioExistente);
             await _unitOfWork.CommitAsync();
-        } 
+        }
+
+        public async Task<UsuarioDto> RegistrarUsuarioAsync(UsuarioDto usuarioDto)
+        {
+            var nuevoUsuario = new Usuario
+            {
+                Nombre = usuarioDto.Nombre,
+                Rol = new Rol { Id = 1, Nombre = "usuario" }                                                                 
+            };
+
+            await _usuarioRepository.AgregarAsync(nuevoUsuario);
+            await _unitOfWork.CommitAsync();
+
+            usuarioDto.Id = nuevoUsuario.Id;
+            return usuarioDto;
+        }
     }
 }

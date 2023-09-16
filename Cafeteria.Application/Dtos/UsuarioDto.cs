@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cafeteria.Domain.Entidades;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +11,13 @@ namespace Cafeteria.Application.Dtos
     {
         public int Id { get; set; }
         public string Nombre { get; set; }        
-        public string Rol { get; set; }
+        public int RolId { get; set; }
+        public RolDto Rol { get; set; }
+        public List<PedidoDto> Pedidos { get; set; }
 
         public UsuarioDto()
-        {            
+        {
+            Pedidos = new List<PedidoDto>();
         }
         
     }

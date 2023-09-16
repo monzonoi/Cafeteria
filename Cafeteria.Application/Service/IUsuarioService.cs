@@ -15,5 +15,6 @@ namespace Cafeteria.Application.Service
         Task<Usuario> CrearUsuarioAsync(UsuarioDto usuarioDto);
         Task ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto);
         Task EliminarUsuarioAsync(int id);
+        Task<UsuarioDto> RegistrarUsuarioAsync(UsuarioDto usuarioDto);
     }
 }

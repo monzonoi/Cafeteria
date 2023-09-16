@@ -15,6 +15,7 @@ namespace Cafeteria.Application.Service
         Task<int> CrearPedidoAsync(PedidoDto pedidoDto);
         Task ActualizarPedidoAsync(int pedidoId, PedidoDto pedidoDto);
         Task EliminarPedidoAsync(int pedidoId);
+        Task<PedidoDto> CambiarEstadoPedidoAsync(int pedidoId, string nuevoEstado);
     }
 
 }

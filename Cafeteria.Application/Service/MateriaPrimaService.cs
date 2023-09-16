@@ -94,7 +94,16 @@ namespace Cafeteria.Application.Service
                 // Mapear otras propiedades si es necesario
             };
         }
- 
+
+        public Task<int> ObtenerStockAsync(string nombre)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ReducirStockAsync(string nombre, int cantidad)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

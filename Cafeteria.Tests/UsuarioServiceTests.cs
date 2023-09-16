@@ -2,6 +2,9 @@
 using Cafeteria.Application.Service;
 using Cafeteria.Domain.Entidades;
 using Cafeteria.Tests.Mock;
+using Moq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Cafeteria.Tests
 {
@@ -139,6 +142,8 @@ namespace Cafeteria.Tests
             Assert.AreEqual("Pendiente", resultadoPedidoConMateriaPrimaDisponible.Estado);
             Assert.AreEqual("SinMateriaPrima", resultadoPedidoConMateriaPrimaInsuficiente.Estado);
         }
+
+
 
 
     }

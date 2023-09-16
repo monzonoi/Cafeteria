@@ -11,11 +11,20 @@ namespace Cafeteria.Tests.Mock
     public class UsuarioServiceMock : IUsuarioService
     {
         private readonly List<UsuarioDto> _usuarios;
+        private readonly IMateriaPrimaService _materiaPrimaService;
+
 
         public UsuarioServiceMock()
         {
             _usuarios = new List<UsuarioDto>();
         }
+
+        public UsuarioServiceMock(IMateriaPrimaService materiaPrimaService)
+        {
+            _materiaPrimaService = materiaPrimaService;
+            _usuarios = new List<UsuarioDto>();
+        }
+
 
         public async Task<UsuarioDto> RegistrarUsuarioAsync(UsuarioDto usuarioDto)
         {
@@ -147,6 +156,39 @@ namespace Cafeteria.Tests.Mock
             // Simulación: Generar un ID único para el pedido
             // En una aplicación real, esto podría obtenerse de una base de datos o generarse de otra manera.
             return new Random().Next(1, 1000);
+        }
+
+        public async Task RealizarOrdenAsync(UsuarioDto usuario, ComandaDto comanda)
+        {
+            // Validar que el usuario tenga el rol correcto
+            if (usuario.Rol.Nombre == "Usuario")
+            {
+                throw new InvalidOperationException("Los usuarios no pueden cambia el estado de una orden.");
+            }
+
+            // Validar el estado de la comanda
+            if (comanda.Estado != "EnProceso")
+            {
+                throw new InvalidOperationException("La comanda debe estar en estado 'EnProceso' para realizar una orden.");
+            }
+
+            // Realizar validaciones adicionales según tus reglas de negocio
+            // ...
+
+            // Actualizar el estado de la comanda
+            comanda.Estado = "Completada";
+
+            // Aquí puedes implementar la lógica para reducir el stock de materia prima según los ítems del pedido
+            foreach (var pedido in comanda.Pedidos)
+            {
+                foreach (var item in pedido.Items)
+                {
+                    // Actualizar el stock de materia prima aquí
+                    await _materiaPrimaService.ReducirStockAsync(item.Nombre, item.Cantidad);
+                }
+            }
+
+            // Realizar otras acciones necesarias, como notificar al supervisor o hacer facturación
         }
     }
 }

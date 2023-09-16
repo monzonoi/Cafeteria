@@ -105,5 +105,10 @@ namespace Cafeteria.Application.Service
             usuarioDto.Id = nuevoUsuario.Id;
             return usuarioDto;
         }
+
+        public Task RealizarOrdenAsync(UsuarioDto usuario, ComandaDto comanda)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

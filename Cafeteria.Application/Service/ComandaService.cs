@@ -66,7 +66,7 @@ namespace Cafeteria.Application.Service
         public async Task<int> CrearComandaAsync(ComandaDto comandaDto)
         {
             // Validar que el pedido existe y está en el estado adecuado para crear una comanda
-            var pedido = await _pedidoRepository.ObtenerPorIdAsync(comandaDto.Pedidos.FirstOrDefault());
+            var pedido = await _pedidoRepository.ObtenerPorIdAsync(comandaDto.Pedidos.Select(s => s.Id).FirstOrDefault());
             if (pedido == null || pedido.Estado != "pendiente")
             {
                 throw new ApplicationException("El pedido no es válido para crear una comanda.");
@@ -92,7 +92,7 @@ namespace Cafeteria.Application.Service
             return new ComandaDto
             {
                 Id = comanda.Id,
-                Pedidos = comanda.Pedidos.Select(s => s.Id).ToList(),
+                //Pedidos = comanda.Pedidos.Select(s => s.Id).ToList(),
                 FechaCreacion = comanda.FechaCreacion
                 // Mapear otras propiedades si es necesario
             };

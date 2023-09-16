@@ -8,13 +8,17 @@ namespace Cafeteria.Tests.Mock
     public class MateriaPrimaServiceMock : IMateriaPrimaService
     {
         private readonly List<MateriaPrimaDto> _materiasPrimas;
+        private readonly IDictionary<string, int> _stockMateriaPrima = new Dictionary<string, int>();
+
 
         public MateriaPrimaServiceMock()
         {
             _materiasPrimas = new List<MateriaPrimaDto>();
+            _stockMateriaPrima.Add("Café", 100);
+
         }
 
-        public Task ActualizarMateriaPrimaAsync(int id, MateriaPrimaDto materiaPrimaDto)
+    public Task ActualizarMateriaPrimaAsync(int id, MateriaPrimaDto materiaPrimaDto)
         {
             throw new NotImplementedException();
         }
@@ -56,6 +60,33 @@ namespace Cafeteria.Tests.Mock
             return true;
         }
 
-        // Otros métodos y lógica relacionada con la materia prima según tus necesidades
+        public async Task<int> ObtenerStockAsync(string nombre)
+        {
+            if (_stockMateriaPrima.TryGetValue(nombre, out int stock))
+            {
+                return stock;
+            }
+
+            throw new KeyNotFoundException($"No se encontró la materia prima '{nombre}' en el stock.");
+        }
+
+        public async Task ReducirStockAsync(string nombre, int cantidad)
+        {
+            if (_stockMateriaPrima.TryGetValue(nombre, out int stock))
+            {
+                if (stock >= cantidad)
+                {
+                    _stockMateriaPrima[nombre] -= cantidad;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Stock insuficiente de '{nombre}' para reducir en {cantidad} unidades.");
+                }
+            }
+            else
+            {
+                throw new KeyNotFoundException($"No se encontró la materia prima '{nombre}' en el stock.");
+            }
+        }
     }
 }

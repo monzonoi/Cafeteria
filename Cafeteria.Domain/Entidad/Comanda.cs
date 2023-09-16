@@ -14,7 +14,8 @@ namespace Cafeteria.Domain.Entidad
         EnProceso = 2,
         Finalizada = 3,
         Facturada = 4,
-        Cancelada = 5
+        Cancelada = 5,
+        Borrador = 6
     }
 
 
@@ -30,6 +31,7 @@ namespace Cafeteria.Domain.Entidad
         public int UsuarioId { get; set; } // Clave foránea para el usuario
 
         public virtual Usuario Usuario { get; set; } // Propiedad de navegación al usuario
+
 
         public virtual ICollection<Pedido> Pedidos { get; set; } // Colección de pedidos en la comanda
         public Factura Factura { get; set; } // Relación maestro-detalle con Factura

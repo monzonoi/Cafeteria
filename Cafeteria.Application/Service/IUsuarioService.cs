@@ -1,4 +1,5 @@
 ﻿using Cafeteria.Application.Dtos;
+using Cafeteria.Domain.Entidad;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Cafeteria.Application.Service
     {
         Task<IEnumerable<UsuarioDto>> ObtenerTodosLosUsuariosAsync();
         Task<UsuarioDto> ObtenerUsuarioPorIdAsync(int id);
-        Task<int> CrearUsuarioAsync(UsuarioDto usuarioDto);
+        Task<Usuario> CrearUsuarioAsync(UsuarioDto usuarioDto);
         Task ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto);
         Task EliminarUsuarioAsync(int id);
     }

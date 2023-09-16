@@ -8,19 +8,23 @@ using System.Threading.Tasks;
 using Cafeteria.Application.Dtos;
 using SendGrid.Helpers.Errors.Model;
 using EstadoComanda = Cafeteria.Domain.Entidad.EstadoComanda;
+using Cafeteria.Intraestructura.Entidades;
 
 namespace Cafeteria.Application.Service
 {
     public class ComandaService : IComandaService
     {
-        private readonly IPedidoRepository _pedidoRepository;
         private readonly IComandaRepository _comandaRepository;
+        private readonly IPedidoRepository _pedidoRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ComandaService(IPedidoRepository pedidoRepository, IComandaRepository comandaRepository, IUnitOfWork unitOfWork)
+        public ComandaService(IComandaRepository comandaRepository, IPedidoRepository pedidoRepository,
+                           IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork)
         {
-            _pedidoRepository = pedidoRepository;
             _comandaRepository = comandaRepository;
+            _pedidoRepository = pedidoRepository;
+            _usuarioRepository = usuarioRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -120,6 +124,88 @@ namespace Cafeteria.Application.Service
             _comandaRepository.EliminarAsync(comandaExistente.Id);
             await _unitOfWork.CommitAsync(); // Guardar cambios en la base de datos
         }
+
+
+        public async Task<Comanda> CrearComandaPorUsuarioAsync(int usuarioId)
+        {
+            var usuario = await _usuarioRepository.ObtenerPorIdAsync(usuarioId);
+
+            if (usuario == null)
+            {
+                throw new Exception("El usuario no existe o no tiene permiso para crear una comanda.");
+            }
+
+            var comanda = new Comanda
+            {
+                UsuarioId = usuario.Id,
+                Estado = EstadoComanda.Borrador, // La comanda se crea en estado "Borrador" inicialmente
+                FechaCreacion = DateTime.Now
+            };
+
+            await _comandaRepository.AgregarAsync(comanda);
+            await _unitOfWork.CommitAsync();
+
+            return comanda;
+        }
+
+
+        public async Task<Pedido> AgregarPedidoAComandaPorUsuarioAsync(int comandaId, PedidoDto pedidoDto, int usuarioId)
+        {
+            var usuario = await _usuarioRepository.ObtenerPorIdAsync(usuarioId);
+            var comanda = await _comandaRepository.ObtenerPorIdAsync(comandaId);
+
+            //if (usuario == null || comanda == null || usuario.Rol != Rol.Usuario || comanda.Estado != EstadoComanda.Borrador)
+            //{
+            //    throw new Exception("No se puede agregar un pedido a la comanda.");
+            //}
+
+            // Validar que el usuario solo pueda agregar pedidos de ciertos ítems disponibles
+            // Implementar lógica aquí para verificar la disponibilidad de materias primas y precios
+
+            var pedido = new Pedido
+            {
+                ComandaId = comanda.Id,
+                //Nombre = pedidoDto.Nombre,
+                //Precio = pedidoDto.Precio,
+                // Agregar más propiedades según corresponda
+            };
+
+            await _pedidoRepository.AgregarAsync(pedido);
+            await _unitOfWork.CommitAsync();
+
+            return pedido;
+        }
+
+        public Task<ComandaDto> ObtenerComandaAsync(int comandaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ComandaDto>> ObtenerComandasPorUsuarioAsync(int usuarioId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<PedidoDto>> ObtenerPedidosPorComandaAsync(int comandaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> AgregarPedidoAsync(int comandaId, PedidoDto pedido, UsuarioDto usuario)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> CambiarEstadoComandaAsync(int comandaId, EstadoComanda nuevoEstado, UsuarioDto usuario)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> FacturarComandaAsync(int comandaId, UsuarioDto supervisor)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /*
          

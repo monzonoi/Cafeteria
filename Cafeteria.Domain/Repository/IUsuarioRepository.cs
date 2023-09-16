@@ -15,5 +15,6 @@ namespace Cafeteria.Domain
         void Actualizar(Usuario usuario);
         void Eliminar(Usuario usuario);
         Task<bool> ExisteAsync(int id);
+        
     }
 }

@@ -48,18 +48,18 @@ namespace Cafeteria.Application.Service
             };
         }
 
-        public async Task<int> CrearUsuarioAsync(UsuarioDto usuarioDto)
+        public async Task<Usuario> CrearUsuarioAsync(UsuarioDto usuarioDto)
         {
             var nuevoUsuario = new Usuario
             {
                 Nombre = usuarioDto.Nombre,
-                Rol = usuarioDto.Roles.FirstOrDefault(),
+                Rol = usuarioDto.Rol,
                 // Mapear otras propiedades desde el DTO
             };
 
             await _usuarioRepository.AgregarAsync(nuevoUsuario);
             await _unitOfWork.CommitAsync();
-            return nuevoUsuario.Id;
+            return nuevoUsuario;
         }
 
         public async Task ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto)

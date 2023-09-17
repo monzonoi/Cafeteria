@@ -143,7 +143,115 @@ namespace Cafeteria.Tests
             Assert.AreEqual("SinMateriaPrima", resultadoPedidoConMateriaPrimaInsuficiente.Estado);
         }
 
+        [TestMethod]
+        public async Task Administrador_PuedeCrearUsuarioAsync()
+        {
+            // Arrange
+            var administrador = new UsuarioDto { Rol = new RolDto { Nombre = "Administrador" } };
+            var usuarioService = new UsuarioServiceMock(); // Usar el servicio simulado
 
+            // Act
+            var resultado = await usuarioService.CrearUsuarioAsync(administrador, new UsuarioDto());
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador debe poder crear un usuario
+        }
+
+        [TestMethod]
+        public async Task Administrador_PuedeEditarUsuarioAsync()
+        {
+            // Arrange
+            var administrador = new UsuarioDto {Id = 1,  Rol = new RolDto { Nombre = "Administrador" } };
+
+            var usuariosExistentes = new UsuarioDto[] 
+            {
+                new UsuarioDto 
+                {
+                    Id = 2,
+                    Nombre = "usuario prueba",
+                    Rol = new RolDto { Id = 1, Nombre = "Empleado"}
+                },
+            };
+
+            var usuarioService = new UsuarioServiceMock(usuariosExistentes.ToList());
+
+            // Act
+            var resultado = await usuarioService.EditarUsuarioAsync(administrador, new UsuarioDto() { Id = 2, Nombre = "nuevo nombre"});
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador debe poder editar un usuario
+        }
+
+        [TestMethod]
+        public async Task Administrador_PuedeEliminarUsuarioAsync()
+        {
+            // Arrange
+            var administrador = new UsuarioDto { Rol = new RolDto { Nombre = "Administrador" } };
+
+            var usuariosExistentes = new UsuarioDto[]
+           {
+                new UsuarioDto
+                {
+                    Id = 2,
+                    Nombre = "usuario prueba",
+                    Rol = new RolDto { Id = 1, Nombre = "Empleado"}
+                },
+           };
+
+            var usuarioService = new UsuarioServiceMock(usuariosExistentes.ToList()); // Usar el servicio simulado
+
+            // Act
+            var resultado = await usuarioService.EliminarUsuarioAsync(administrador, 2); // Supongamos que el usuario a eliminar tiene ID 1
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador debe poder eliminar un usuario
+        }
+
+        [TestMethod]
+        public async Task Administrador_PuedeCrearRolAsync()
+        {
+            // Arrange
+            var administrador = new UsuarioDto { Rol = new RolDto { Nombre = "Administrador" } };
+            var usuarioService = new UsuarioServiceMock(); // Usar el servicio simulado
+
+            // Act
+            var resultado = await usuarioService.CrearRolAsync(administrador, new RolDto());
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador debe poder crear un rol
+        }
+
+        [TestMethod]
+        public async Task Administrador_PuedeEditarRolAsync()
+        {
+            // Arrange
+            var administrador = new UsuarioDto { Rol = new RolDto { Nombre = "Administrador" } };
+            var roles = new RolDto[] { new RolDto { Id = 1, Nombre = "Empleado" } };
+            var usuarioService = new UsuarioServiceMock(roles.ToList()); // Usar el servicio simulado
+
+            // Act
+            var resultado = await usuarioService.EditarRolAsync(administrador, new RolDto() { Id = 1});
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador debe poder editar un rol
+        }
+
+        [TestMethod]
+        public async Task Administrador_PuedeEliminarRolAsync()
+        {
+            // Arrange
+            var administrador = new UsuarioDto { Rol = new RolDto { Nombre = "Administrador" } };
+        
+            var roles = new RolDto[] { new RolDto { Id = 1, Nombre = "Empleado" } };
+
+            var usuarioService = new UsuarioServiceMock(roles.ToList()); // Usar el servicio simulado
+
+            // Act
+            var resultado = await usuarioService.EliminarRolAsync(administrador, 1); // Supongamos que el rol a eliminar tiene ID 1
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador debe poder eliminar un rol
+        }
 
 
     }

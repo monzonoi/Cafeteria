@@ -12,10 +12,14 @@ namespace Cafeteria.Application.Service
     {
         Task<IEnumerable<UsuarioDto>> ObtenerTodosLosUsuariosAsync();
         Task<UsuarioDto> ObtenerUsuarioPorIdAsync(int id);
-        Task<Usuario> CrearUsuarioAsync(UsuarioDto usuarioDto);
-        Task ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto);
-        Task EliminarUsuarioAsync(int id);
+        Task<bool> CrearUsuarioAsync(UsuarioDto administrador, UsuarioDto nuevoUsuario);
+        Task<bool> ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto);
+        Task<bool> EliminarUsuarioAsync(UsuarioDto administrador, int usuarioIdAEliminar);
         Task<UsuarioDto> RegistrarUsuarioAsync(UsuarioDto usuarioDto);
-        Task RealizarOrdenAsync(UsuarioDto usuario, ComandaDto comanda);
+        Task RealizarOrdenAsync(UsuarioDto usuario, ComandaDto comanda);//Quitar este metodo de aca y llevarlo a comanda
+        Task<bool> EditarUsuarioAsync(UsuarioDto administrador, UsuarioDto usuarioEditado);
+        Task<bool> CrearRolAsync(UsuarioDto administrador, RolDto nuevoRol);
+        Task<bool> EditarRolAsync(UsuarioDto administrador, RolDto rolEditado);
+        Task<bool> EliminarRolAsync(UsuarioDto administrador, int rolIdAEliminar);
     }
 }

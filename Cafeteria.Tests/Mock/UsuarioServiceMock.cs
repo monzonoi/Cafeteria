@@ -12,11 +12,23 @@ namespace Cafeteria.Tests.Mock
     {
         private readonly List<UsuarioDto> _usuarios;
         private readonly IMateriaPrimaService _materiaPrimaService;
+        private List<RolDto> _roles;
 
 
         public UsuarioServiceMock()
         {
             _usuarios = new List<UsuarioDto>();
+            _roles = new List<RolDto>();
+        }
+
+        public UsuarioServiceMock(List<RolDto> roles)
+        {
+            _roles = roles;
+        }
+
+        public UsuarioServiceMock(List<UsuarioDto> usuarios)
+        {
+            _usuarios = usuarios;
         }
 
         public UsuarioServiceMock(IMateriaPrimaService materiaPrimaService)
@@ -25,6 +37,7 @@ namespace Cafeteria.Tests.Mock
             _usuarios = new List<UsuarioDto>();
         }
 
+      
 
         public async Task<UsuarioDto> RegistrarUsuarioAsync(UsuarioDto usuarioDto)
         {
@@ -58,20 +71,26 @@ namespace Cafeteria.Tests.Mock
             throw new NotImplementedException();
         }
 
-        public Task<Usuario> CrearUsuarioAsync(UsuarioDto usuarioDto)
+        public async Task<bool> CrearUsuarioAsync(UsuarioDto administrador, UsuarioDto nuevoUsuario)
         {
-            throw new NotImplementedException();
+            if (administrador.Rol.Nombre == "Administrador")
+            {
+                // Verificar si el usuario ya existe (por ejemplo, por nombre)
+                if (_usuarios.Any(u => u.Nombre == nuevoUsuario.Nombre))
+                {
+                    return false; // El usuario ya existe, no se puede crear
+                }
+
+                // Asignar el nuevo usuario a la lista de usuarios
+                _usuarios.Add(nuevoUsuario);
+
+                return true; // El usuario se ha creado exitosamente
+            }
+
+            return false; // El administrador no tiene permiso para crear usuarios
         }
 
-        public Task ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task EliminarUsuarioAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         //public Task RealizarPedidoAsync(UsuarioDto usuario, PedidoDto pedidoConMateriaPrimaDisponible, MateriaPrimaServiceMock materiaPrimaService)
         //{
@@ -190,5 +209,144 @@ namespace Cafeteria.Tests.Mock
 
             // Realizar otras acciones necesarias, como notificar al supervisor o hacer facturación
         }
+
+        public Task<bool> ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> EditarUsuarioAsync(UsuarioDto administrador, UsuarioDto usuarioEditado)
+        {
+            if (administrador.Rol.Nombre == "Administrador")
+            {
+                // Buscar el usuario a editar en la lista por ID u otro identificador
+                var usuarioExistente = _usuarios.FirstOrDefault(u => u.Id == usuarioEditado.Id);
+
+                if (usuarioExistente != null)
+                {
+                    // Actualizar los datos del usuario existente con los datos del usuario editado
+                    usuarioExistente.Nombre = usuarioEditado.Nombre;
+                    // Aquí actualiza otras propiedades según sea necesario
+
+                    return true; // Usuario editado exitosamente
+                }
+
+                return false; // No se encontró el usuario a editar
+            }
+
+            return false; // El administrador no tiene permiso para editar usuarios
+        }
+
+        public async Task<bool> EliminarUsuarioAsync(UsuarioDto administrador, int usuarioIdAEliminar)
+        {
+            if (administrador.Rol.Nombre == "Administrador")
+            {
+                // Buscar el usuario a eliminar en la lista por ID u otro identificador
+                var usuarioAEliminar = _usuarios.FirstOrDefault(u => u.Id == usuarioIdAEliminar);
+
+                if (usuarioAEliminar != null)
+                {
+                    // Eliminar el usuario de la lista
+                    _usuarios.Remove(usuarioAEliminar);
+                    return true; // Usuario eliminado exitosamente
+                }
+
+                return false; // No se encontró el usuario a eliminar
+            }
+
+            return false; // El administrador no tiene permiso para eliminar usuarios
+        }
+
+        public async Task<bool> CrearRolAsync(UsuarioDto administrador, RolDto nuevoRol)
+        {
+            if (administrador.Rol.Nombre == "Administrador")
+            {
+                // Verificar si ya existe un rol con el mismo nombre
+                if (_roles.Any(r => r.Nombre == nuevoRol.Nombre))
+                {
+                    return false; // El rol ya existe
+                }
+
+                // Asignar un nuevo ID al rol (puedes hacerlo según tu lógica)
+                nuevoRol.Id = _roles.Count + 1;
+
+                // Agregar el nuevo rol a la lista
+                _roles.Add(nuevoRol);
+                return true; // Rol creado exitosamente
+            }
+
+            return false; // El administrador no tiene permiso para crear roles
+        }
+
+        public async Task<bool> EditarRolAsync(UsuarioDto administrador, RolDto rolEditado)
+        {
+            if (administrador.Rol.Nombre == "Administrador")
+            {
+                // Verificar si existe un rol con el mismo ID
+                var rolExistente = _roles.FirstOrDefault(r => r.Id == rolEditado.Id);
+
+                if (rolExistente == null)
+                {
+                    return false; // El rol no existe
+                }
+
+                // Verificar si el administrador tiene permiso para editar el rol (puedes definir tus propias reglas)
+                if (!TienePermisoParaEditarRol(administrador, rolExistente))
+                {
+                    return false; // El administrador no tiene permiso para editar el rol
+                }
+
+                // Actualizar los datos del rol existente con los datos del rol editado
+                rolExistente.Nombre = rolEditado.Nombre;
+                return true; // Rol editado exitosamente
+            }
+
+            return false; // El administrador no tiene permiso para editar roles
+        }
+
+        // Esta función verifica si el administrador tiene permiso para editar el rol
+        private bool TienePermisoParaEditarRol(UsuarioDto administrador, RolDto rolExistente)
+        {
+            // Aquí puedes definir tus propias reglas de permisos, por ejemplo,
+            // permitir editar solo roles que no sean "Administrador"
+            return rolExistente.Nombre != "Administrador";
+        }
+
+
+        public async Task<bool> EliminarRolAsync(UsuarioDto administrador, int rolIdAEliminar)
+        {
+            if (administrador.Rol.Nombre == "Administrador")
+            {
+                // Verificar si existe un rol con el ID especificado
+                var rolExistente = _roles.FirstOrDefault(r => r.Id == rolIdAEliminar);
+
+                if (rolExistente == null)
+                {
+                    return false; // El rol no existe
+                }
+
+                // Verificar si el administrador tiene permiso para eliminar el rol (puedes definir tus propias reglas)
+                if (!TienePermisoParaEliminarRol(administrador, rolExistente))
+                {
+                    return false; // El administrador no tiene permiso para eliminar el rol
+                }
+
+                // Eliminar el rol existente
+                _roles.Remove(rolExistente);
+                return true; // Rol eliminado exitosamente
+            }
+
+            return false; // El administrador no tiene permiso para eliminar roles
+        }
+
+        // Esta función verifica si el administrador tiene permiso para eliminar el rol
+        private bool TienePermisoParaEliminarRol(UsuarioDto administrador, RolDto rolExistente)
+        {
+            // Aquí puedes definir tus propias reglas de permisos, por ejemplo,
+            // permitir eliminar solo roles que no sean "Administrador"
+            return rolExistente.Nombre != "Administrador";
+        }
+
+
     }
 }

@@ -78,17 +78,21 @@ namespace Cafeteria.Application.Service
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task EliminarUsuarioAsync(int id)
+        public async Task<bool> EliminarUsuarioAsync(UsuarioDto administrador, int usuarioIdAEliminar)
         {
-            var usuarioExistente = await _usuarioRepository.ObtenerPorIdAsync(id);
+            //falta traer logica lograda con los test
+
+            var usuarioExistente = await _usuarioRepository.ObtenerPorIdAsync(usuarioIdAEliminar);
 
             if (usuarioExistente == null)
             {
-                throw new NotFoundException($"Usuario con ID {id} no encontrado.");
+                throw new NotFoundException($"Usuario con ID {usuarioIdAEliminar} no encontrado.");
             }
 
             _usuarioRepository.Eliminar(usuarioExistente);
             await _unitOfWork.CommitAsync();
+
+            return true;
         }
 
         public async Task<UsuarioDto> RegistrarUsuarioAsync(UsuarioDto usuarioDto)
@@ -107,6 +111,36 @@ namespace Cafeteria.Application.Service
         }
 
         public Task RealizarOrdenAsync(UsuarioDto usuario, ComandaDto comanda)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CrearUsuarioAsync(UsuarioDto administrador, UsuarioDto nuevoUsuario)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IUsuarioService.ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> EditarUsuarioAsync(UsuarioDto administrador, UsuarioDto usuarioEditado)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CrearRolAsync(UsuarioDto administrador, RolDto nuevoRol)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> EditarRolAsync(UsuarioDto administrador, RolDto rolEditado)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> EliminarRolAsync(UsuarioDto administrador, int rolIdAEliminar)
         {
             throw new NotImplementedException();
         }

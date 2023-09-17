@@ -36,9 +36,9 @@ namespace Cafeteria.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CrearUsuario([FromBody] UsuarioDto usuarioDto)
+        public async Task<ActionResult<int>> CrearUsuario([FromBody] UsuarioDto usuarioSolicitante, UsuarioDto usuarionuevo)
         {
-            var idCreado = await _usuarioService.CrearUsuarioAsync(usuarioDto);
+            var idCreado = await _usuarioService.CrearUsuarioAsync(usuarioSolicitante, usuarionuevo);
             return CreatedAtAction(nameof(ObtenerUsuarioPorId), new { id = idCreado }, idCreado);
         }
 
@@ -57,11 +57,11 @@ namespace Cafeteria.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarUsuario(int id)
-        {
+        public async Task<IActionResult> EliminarUsuario(UsuarioDto administrador, int usuarioIdAEliminar)
+        {            
             try
             {
-                await _usuarioService.EliminarUsuarioAsync(id);
+                await _usuarioService.EliminarUsuarioAsync(administrador, usuarioIdAEliminar);
                 return NoContent();
             }
             catch (NotFoundException)

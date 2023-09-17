@@ -13,9 +13,14 @@ namespace Cafeteria.Tests.Mock
 
         public MateriaPrimaServiceMock()
         {
-            _materiasPrimas = new List<MateriaPrimaDto>();
-            _stockMateriaPrima.Add("Café", 100);
+            _materiasPrimas = new List<MateriaPrimaDto>
+        {
+            new MateriaPrimaDto { Id = 1, Nombre = "Materia Prima 1", CantidadDisponible = 100 },
+            new MateriaPrimaDto { Id = 2, Nombre = "Materia Prima 2", CantidadDisponible = 50 },
+            // Agrega más elementos según tus necesidades
+        };
 
+            _stockMateriaPrima.Add("Café", 100);
         }
 
     public Task ActualizarMateriaPrimaAsync(int id, MateriaPrimaDto materiaPrimaDto)
@@ -87,6 +92,38 @@ namespace Cafeteria.Tests.Mock
             {
                 throw new KeyNotFoundException($"No se encontró la materia prima '{nombre}' en el stock.");
             }
+        }
+
+
+
+        public async Task AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad)
+        {
+            if (usuario == null || materiaPrima == null)
+            {
+                throw new ArgumentNullException("Usuario y materia prima no pueden ser nulos");
+            }
+
+            // Verifica si el usuario tiene permiso para ajustar la materia prima (rol Supervisor o Administrador)
+            if (!EsSupervisorOAdministrador(usuario))
+            {
+                throw new UnauthorizedAccessException("El usuario no tiene permiso para ajustar la materia prima");
+            }
+
+            // Busca la materia prima en la lista ficticia
+            var materiaPrimaExistente = _materiasPrimas.FirstOrDefault(mp => mp.Id == materiaPrima.Id);
+
+            if (materiaPrimaExistente == null)
+            {
+                throw new InvalidOperationException("La materia prima no existe");
+            }
+
+            // Realiza el ajuste de stock según la cantidad especificada
+            materiaPrimaExistente.Cantidad += cantidad;
+        }
+
+        private bool EsSupervisorOAdministrador(UsuarioDto usuario)
+        {
+            return usuario.Rol?.Nombre == "Supervisor" || usuario.Rol?.Nombre == "Administrador";
         }
     }
 }

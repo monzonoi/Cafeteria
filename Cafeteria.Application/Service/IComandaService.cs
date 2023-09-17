@@ -25,6 +25,8 @@ namespace Cafeteria.Application.Service
         Task<ComandaDto> CambiarEstadoComandaAsync(int comandaId, string nuevoEstado, UsuarioDto usuario);
         Task<ComandaDto> FacturarComandaAsync(int comandaId, UsuarioDto supervisor);
 
+        Task<List<PedidoDto>> ObtenerTodosAsync(UsuarioDto usuario);
+        Task<List<PedidoDto>> ObtenerTrabajosRealizadosAsync(UsuarioDto empleado);
     }
 
 }

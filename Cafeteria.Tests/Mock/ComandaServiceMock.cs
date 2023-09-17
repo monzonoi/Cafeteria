@@ -1,6 +1,7 @@
 ﻿using Cafeteria.Application.Dtos;
 using Cafeteria.Application.Service;
 using Cafeteria.Domain;
+using Cafeteria.Domain.Entidades;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cafeteria.Tests.Mock
 {
-    public class ComandaServiceMock
+    public class ComandaServiceMock : IComandaService
     {
         private readonly Mock<IUsuarioService> _usuarioServiceMock;
         private readonly Mock<IMateriaPrimaService> _materiaPrimaServiceMock;
@@ -64,6 +65,120 @@ namespace Cafeteria.Tests.Mock
             }
         }
 
+        public async Task<List<PedidoDto>> ObtenerTodosAsync(UsuarioDto usuario)
+        {
+            // Verificar si el usuario tiene permiso para ver los pedidos
+            if (usuario.Rol.Nombre == "Supervisor" || usuario.Rol.Nombre == "Administrador")
+            {
+                // Filtrar las comandas según el usuario (Supervisor/Administrador ve todas las comandas)
+                var comandasFiltradas = _comandasEnMemoria;
+
+                // Crear una lista para almacenar todos los pedidos de las comandas
+                var todosLosPedidos = new List<PedidoDto>();
+
+                // Iterar a través de las comandas filtradas
+                foreach (var comanda in comandasFiltradas)
+                {
+                    // Agregar todos los pedidos de la comanda a la lista de pedidos
+                    todosLosPedidos.AddRange(comanda.Pedidos);
+                }
+
+                return todosLosPedidos;
+            }
+            else
+            {
+                // El usuario no tiene permiso para ver los pedidos
+                throw new UnauthorizedAccessException("El usuario no tiene permiso para ver los pedidos.");
+            }
+        }
+
+        public Task CambiarEstadoComandaAsync(int comandaId, string nuevoEstado)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ComandaDto>> ObtenerTodasLasComandasAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> ObtenerComandaPorIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> CrearComandaAsync(ComandaDto comandaDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ActualizarComandaAsync(int id, ComandaDto comandaDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EliminarComandaAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> ObtenerComandaAsync(int comandaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ComandaDto>> ObtenerComandasPorUsuarioAsync(int usuarioId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<PedidoDto>> ObtenerPedidosPorComandaAsync(int comandaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> AgregarPedidoAsync(int comandaId, PedidoDto pedido, UsuarioDto usuario)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> CambiarEstadoComandaAsync(int comandaId, string nuevoEstado, UsuarioDto usuario)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComandaDto> FacturarComandaAsync(int comandaId, UsuarioDto supervisor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<PedidoDto>> ObtenerTrabajosRealizadosAsync(UsuarioDto usuario)
+        {
+            // Verificamos si el usuario tiene el rol de "Supervisor" o "Administrador"
+            if (usuario.Rol.Nombre != "Supervisor" && usuario.Rol.Nombre != "Administrador")
+            {
+                // Si no tiene los roles permitidos, lanzamos una excepción o devolvemos una lista vacía, según tu preferencia
+                throw new UnauthorizedAccessException("No tienes permisos para ver los trabajos realizados por empleados.");
+            }
+
+            // Simulamos la obtención de todas las comandas no completadas
+            var comandasCompletadas = _comandasEnMemoria.Where(c => c.Estado != "Completada").ToList();
+
+            // Creamos una lista para almacenar los trabajos realizados por los empleados
+            var trabajosRealizados = new List<PedidoDto>();
+
+            // Iteramos sobre todas las comandas completadas
+            foreach (var comanda in comandasCompletadas)
+            {
+                // Filtramos los pedidos que están en estado no "Completado" y pertenecen a un usuario con rol "Empleado"
+                var pedidosEmpleados = comanda.Pedidos.Where(p => p.Usuario.Rol.Nombre == "Empleado" && p.Estado != "Completado").ToList();
+
+                // Agregamos los pedidos de empleados a la lista de trabajos realizados
+                trabajosRealizados.AddRange(pedidosEmpleados);
+            }
+
+            return await Task.FromResult(trabajosRealizados);
+        }
 
     }
 }

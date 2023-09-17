@@ -205,6 +205,16 @@ namespace Cafeteria.Application.Service
             throw new NotImplementedException();
         }
 
+        public Task<List<PedidoDto>> ObtenerTodosAsync(UsuarioDto usuario)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<PedidoDto>> ObtenerTrabajosRealizadosAsync(UsuarioDto empleado)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /*
          

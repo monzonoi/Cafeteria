@@ -104,6 +104,11 @@ namespace Cafeteria.Application.Service
         {
             throw new NotImplementedException();
         }
+
+        public async Task AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

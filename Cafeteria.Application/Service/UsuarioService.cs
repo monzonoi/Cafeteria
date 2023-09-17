@@ -144,5 +144,10 @@ namespace Cafeteria.Application.Service
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> CambiarParametroAsync(UsuarioDto usuario, ParametroDto parametro)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

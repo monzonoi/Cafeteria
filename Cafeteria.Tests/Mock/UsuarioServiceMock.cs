@@ -13,12 +13,18 @@ namespace Cafeteria.Tests.Mock
         private readonly List<UsuarioDto> _usuarios;
         private readonly IMateriaPrimaService _materiaPrimaService;
         private List<RolDto> _roles;
-
+        private readonly List<ParametroDto> parametros;
 
         public UsuarioServiceMock()
         {
             _usuarios = new List<UsuarioDto>();
             _roles = new List<RolDto>();
+
+            parametros = new List<ParametroDto>
+            {
+                new ParametroDto { Id = 1, Nombre = "Parametro1", Valor = "Valor1", Descripcion = "Descripción1" },
+                new ParametroDto { Id = 2, Nombre = "Parametro2", Valor = "Valor2", Descripcion = "Descripción2" },                
+            };
         }
 
         public UsuarioServiceMock(List<RolDto> roles)
@@ -37,7 +43,9 @@ namespace Cafeteria.Tests.Mock
             _usuarios = new List<UsuarioDto>();
         }
 
-      
+     
+
+
 
         public async Task<UsuarioDto> RegistrarUsuarioAsync(UsuarioDto usuarioDto)
         {
@@ -347,6 +355,31 @@ namespace Cafeteria.Tests.Mock
             return rolExistente.Nombre != "Administrador";
         }
 
+
+
+        public async Task<bool> CambiarParametroAsync(UsuarioDto usuario, ParametroDto parametro)
+        {
+            // Verificar si el usuario tiene permisos de administrador
+            if (usuario.Rol.Nombre != "Administrador")
+            {
+                throw new UnauthorizedAccessException("El usuario no tiene permisos para cambiar parámetros.");
+            }
+
+            // Buscar el parámetro por ID en la lista
+            var parametroExistente = parametros.FirstOrDefault(p => p.Id == parametro.Id);
+
+            if (parametroExistente == null)
+            {
+                throw new ArgumentException("El parámetro especificado no existe.");
+            }
+
+            // Actualizar los valores del parámetro con los valores del DTO
+            parametroExistente.Nombre = parametro.Nombre;
+            parametroExistente.Valor = parametro.Valor;
+            parametroExistente.Descripcion = parametro.Descripcion;
+
+            return true;
+        }
 
     }
 }

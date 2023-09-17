@@ -171,6 +171,79 @@ namespace Cafeteria.Tests
             //Assert.AreEqual(1, trabajosRealizados.Count); // Debería haber solo 1 trabajo en la lista
             //Assert.AreEqual(1, trabajosRealizados[0].Id); // El trabajo debe pertenecer al empleado
         }
-        
+
+
+        [TestMethod]
+        public async Task AdministradorPuedeEditarPedidos()
+        {
+            // Arrange
+            var administrador = new UsuarioDto
+            {
+                Nombre = "Administrador",
+                Rol = new RolDto { Nombre = "Administrador" }
+            };           
+
+            var pedidoService = new PedidoServiceMock(); // Supongamos que tienes un servicio de pedidos simulado
+
+            // Act
+            var resultado = await pedidoService.EditarPedidoAsync(administrador, new PedidoDto() { Id = 1});
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador puede editar pedidos
+        }
+
+        [TestMethod]
+        public async Task AdministradorPuedeEditarComandas()
+        {
+            // Arrange
+            var administrador = new UsuarioDto
+            {
+                Nombre = "Administrador",
+                Rol = new RolDto { Nombre = "Administrador" }
+            };
+
+            var comandas = new List<ComandaDto>
+            {
+                // Comanda con trabajos del "Empleado"
+                new ComandaDto
+                {
+                    Id = 1,
+                    Estado = "Completada",
+                    Pedidos = new List<PedidoDto>
+                    {
+                        new PedidoDto
+                        {
+                            Id = 1,
+                            Estado = "Completado",
+                        }
+                    }
+                },
+                // Comanda con trabajos de otro "Empleado"
+                new ComandaDto
+                {
+                    Id = 2,
+                    Estado = "Completada",
+                    Usuario = new UsuarioDto { Nombre = "OtroEmpleado", Rol = new RolDto { Nombre = "Empleado" } },
+                    Pedidos = new List<PedidoDto>
+                    {
+                        new PedidoDto
+                        {
+                            Id = 2,
+                            Estado = "Completado",
+                            Usuario = new UsuarioDto { Nombre = "OtroEmpleado", Rol = new RolDto { Nombre = "Empleado" } }
+                        }
+                    }
+                }
+            };
+
+            var comandaService = new ComandaServiceMock(comandas); // Supongamos que tienes un servicio de comandas simulado
+
+            // Act
+            var resultado = await comandaService.EditarComandaAsync(administrador, new ComandaDto() { Id = 1});
+
+            // Assert
+            Assert.IsTrue(resultado); // El administrador puede editar comandas
+        }
+
     }
 }

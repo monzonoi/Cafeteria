@@ -254,5 +254,24 @@ namespace Cafeteria.Tests
         }
 
 
+        [TestMethod]
+        public async Task SoloAdministradorPuedeCambiarParametros()
+        {
+            // Arrange
+            var administrador = new UsuarioDto
+            {
+                Nombre = "Administrador",
+                Rol = new RolDto { Nombre = "Administrador" }
+            };
+
+            var usuarioService = new UsuarioServiceMock();
+
+            // Act
+            var resultado = await usuarioService.CambiarParametroAsync(administrador, new ParametroDto() { Id = 1});
+
+            // Assert
+            Assert.IsTrue(resultado); // Debería ser verdadero, ya que el administrador puede cambiar parámetros
+        }
+
     }
 }

@@ -21,5 +21,6 @@ namespace Cafeteria.Application.Service
         Task<bool> CrearRolAsync(UsuarioDto administrador, RolDto nuevoRol);
         Task<bool> EditarRolAsync(UsuarioDto administrador, RolDto rolEditado);
         Task<bool> EliminarRolAsync(UsuarioDto administrador, int rolIdAEliminar);
+        Task<bool> CambiarParametroAsync(UsuarioDto usuario, ParametroDto parametro);
     }
 }

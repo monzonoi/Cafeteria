@@ -92,5 +92,10 @@ namespace Cafeteria.Application.Service
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> EditarPedidoAsync(UsuarioDto usuario, PedidoDto pedido)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

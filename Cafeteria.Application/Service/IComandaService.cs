@@ -27,6 +27,7 @@ namespace Cafeteria.Application.Service
 
         Task<List<PedidoDto>> ObtenerTodosAsync(UsuarioDto usuario);
         Task<List<PedidoDto>> ObtenerTrabajosRealizadosAsync(UsuarioDto empleado);
+        Task<bool> EditarComandaAsync(UsuarioDto usuario, ComandaDto comanda);
     }
 
 }

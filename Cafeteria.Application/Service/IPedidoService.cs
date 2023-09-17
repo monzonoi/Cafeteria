@@ -16,6 +16,7 @@ namespace Cafeteria.Application.Service
         Task ActualizarPedidoAsync(int pedidoId, PedidoDto pedidoDto);
         Task EliminarPedidoAsync(int pedidoId);
         Task<PedidoDto> CambiarEstadoPedidoAsync(int pedidoId, string nuevoEstado);
+        Task<bool> EditarPedidoAsync(UsuarioDto usuario, PedidoDto pedido);
     }
 
 }

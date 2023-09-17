@@ -19,8 +19,6 @@ namespace Cafeteria.Tests.Mock
         public readonly List<ComandaDto> _comandasEnMemoria;
         public readonly List<PedidoDto> _pedidosEnMemoria;
 
-
-
         public ComandaServiceMock(IComandaRepository _comandaRepository, Mock<IUsuarioService> usuarioServiceMock, Mock<IMateriaPrimaService> materiaPrimaServiceMock)
         {
             _usuarioServiceMock = usuarioServiceMock ?? throw new ArgumentNullException(nameof(usuarioServiceMock));
@@ -32,6 +30,11 @@ namespace Cafeteria.Tests.Mock
         {
             _comandasEnMemoria = comandas;
             _pedidosEnMemoria = pedidos;
+        }
+
+        public ComandaServiceMock(List<ComandaDto> comandas)
+        {
+            _comandasEnMemoria = comandas;
         }
 
         public async Task CambiarEstadoPedidoAsync(PedidoDto pedido, string nuevoEstado)
@@ -178,6 +181,23 @@ namespace Cafeteria.Tests.Mock
             }
 
             return await Task.FromResult(trabajosRealizados);
+        }
+
+        public Task<bool> EditarComandaAsync(UsuarioDto usuario, ComandaDto comanda)
+        {
+            // Simula la lógica de edición de una comanda
+            // Por ejemplo, puedes verificar si el usuario tiene permiso para editar
+            // y luego actualizar la comanda en la lista simulada
+
+            var comandaExistente = _comandasEnMemoria.FirstOrDefault(c => c.Id == comanda.Id);
+
+            if (comandaExistente != null)
+            {
+                comandaExistente.Estado = comanda.Estado;
+                return Task.FromResult(true); // Simulación exitosa
+            }
+
+            return Task.FromResult(false); // Simulación de error (comanda no encontrada)
         }
 
     }

@@ -215,6 +215,11 @@ namespace Cafeteria.Application.Service
             throw new NotImplementedException();
         }
 
+        public Task<bool> EditarComandaAsync(UsuarioDto usuario, ComandaDto comanda)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /*
          

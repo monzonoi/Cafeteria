@@ -52,18 +52,7 @@ namespace Cafeteria.Tests.Mock
         {
             throw new NotImplementedException();
         }
-
-        public bool ValidarStockDisponible(ItemPedidoDto itemPedido)
-        {
-            // Verificar si hay suficiente materia prima disponible para el pedido
-            var materiaPrima = _materiasPrimas.FirstOrDefault(mp => mp.Nombre == itemPedido.NombreMateriaPrima);
-            if (materiaPrima == null || materiaPrima.CantidadDisponible < itemPedido.CantidadRequerida)
-            {
-                return false; // No hay suficiente materia prima disponible
-            }
-
-            return true;
-        }
+          
 
         public async Task<int> ObtenerStockAsync(string nombre)
         {
@@ -124,6 +113,16 @@ namespace Cafeteria.Tests.Mock
         private bool EsSupervisorOAdministrador(UsuarioDto usuario)
         {
             return usuario.Rol?.Nombre == "Supervisor" || usuario.Rol?.Nombre == "Administrador";
+        }
+
+        public Task<bool> ValidarStockDisponibleAsync(ItemPedidoDto itemPedido)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ReducirStockAsync(MateriaPrimaDto materiaprima, int cantidad)
+        {
+            throw new NotImplementedException();
         }
     }
 }

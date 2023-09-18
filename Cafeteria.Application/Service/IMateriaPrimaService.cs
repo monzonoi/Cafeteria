@@ -16,7 +16,8 @@ namespace Cafeteria.Application.Service
         Task ActualizarMateriaPrimaAsync(int id, MateriaPrimaDto materiaPrimaDto);
         Task EliminarMateriaPrimaAsync(int id);
         Task<int> ObtenerStockAsync(string nombre);
-        Task ReducirStockAsync(string nombre, int cantidad);
+        Task<bool> ReducirStockAsync(MateriaPrimaDto materiaprima, int cantidad);
         Task AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad);
+        Task<bool> ValidarStockDisponibleAsync(ItemPedidoDto itemPedido);
     }
 }

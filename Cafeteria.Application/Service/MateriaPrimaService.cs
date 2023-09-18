@@ -100,15 +100,99 @@ namespace Cafeteria.Application.Service
             throw new NotImplementedException();
         }
 
-        public Task ReducirStockAsync(string nombre, int cantidad)
+
+        public async Task<bool> ValidarStockDisponibleAsync(ItemPedidoDto itemPedido)
         {
-            throw new NotImplementedException();
+            // Obtener la materia prima desde el repositorio
+            var materiaPrima = await _materiaPrimaRepository.ObtenerPorNombreAsync(itemPedido.NombreMateriaPrima);
+
+            if (materiaPrima == null || materiaPrima.CantidadDisponible < itemPedido.CantidadRequerida)
+            {
+                return false; // No hay suficiente materia prima disponible
+            }
+
+            return true;
+        }
+
+        public async Task<bool> ValidarStockDisponible(ItemPedidoDto itemPedido)
+        {
+            try
+            {
+                var materiaPrima = await _materiaPrimaRepository.ObtenerPorIdAsync(itemPedido.Id);
+
+                if (materiaPrima.CantidadDisponible < itemPedido.CantidadRequerida)
+                {
+                    return false; // No hay suficiente materia prima disponible
+                }
+
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false; // No se encontró la materia prima en el repositorio
+            }
+        }
+
+        public async Task<bool> ReducirStockAsync(MateriaPrimaDto materiaprima, int cantidad)
+        {
+            var materiaPrima = await _materiaPrimaRepository.ObtenerPorIdAsync(materiaprima.Id);
+
+            if (materiaPrima != null)
+            {
+                if (materiaPrima.CantidadDisponible >= cantidad)
+                {
+                    await _materiaPrimaRepository.ReducirStockAsync(materiaPrima.Id, cantidad);
+                    return true; // Stock reducido con éxito
+                }
+                else
+                {
+                    return false; // Stock insuficiente
+                }
+            }
+            else
+            {
+                throw new KeyNotFoundException($"No se encontró la materia prima '{materiaprima.Nombre}' en el repositorio.");
+            }
         }
 
         public async Task AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad)
         {
-            throw new NotImplementedException();
+            if (usuario == null || materiaPrima == null)
+            {
+                throw new ArgumentNullException("Usuario y materia prima no pueden ser nulos");
+            }
+
+            // Verifica si el usuario tiene permiso para ajustar la materia prima (rol Supervisor o Administrador)
+            if (!EsSupervisorOAdministrador(usuario))
+            {
+                throw new UnauthorizedAccessException("El usuario no tiene permiso para ajustar la materia prima");
+            }
+
+            // Busca la materia prima en el repositorio por su ID
+            var materiaPrimaExistente = await _materiaPrimaRepository.ObtenerPorIdAsync(materiaPrima.Id);
+
+            if (materiaPrimaExistente == null)
+            {
+                throw new InvalidOperationException("La materia prima no existe");
+            }
+
+            // Realiza el ajuste de stock según la cantidad especificada
+            materiaPrimaExistente.CantidadDisponible += cantidad;
+
+            // Actualiza la materia prima en el repositorio
+            await _materiaPrimaRepository.ActualizarAsync(materiaPrimaExistente);
         }
+
+
+        #region Metodos Privados
+        private bool EsSupervisorOAdministrador(UsuarioDto usuario)
+        {
+            // Verificar si el usuario tiene el rol de Supervisor o Administrador
+            return usuario.Rol.Nombre == "Supervisor" || usuario.Rol.Nombre == "Administrador";
+        }
+
+        #endregion
+
     }
 
 }

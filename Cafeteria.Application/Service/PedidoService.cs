@@ -93,9 +93,40 @@ namespace Cafeteria.Application.Service
             throw new NotImplementedException();
         }
 
-        public Task<bool> EditarPedidoAsync(UsuarioDto usuario, PedidoDto pedido)
+        public async Task<bool> EditarPedidoAsync(UsuarioDto usuario, PedidoDto pedido)
         {
-            throw new NotImplementedException();
+            // Verificar si el usuario tiene permiso para editar pedidos
+            if (!EsAdministrador(usuario))
+            {
+                throw new UnauthorizedAccessException("El usuario no tiene permiso para editar pedidos.");
+            }
+
+            // Buscar el pedido en el repositorio por su ID
+            var pedidoExistente = await _pedidoRepository.ObtenerPorIdAsync(pedido.Id);
+
+            if (pedidoExistente != null)
+            {
+                // Actualizar los campos del pedido existente con los valores del pedido recibido
+                pedidoExistente.Estado = pedido.Estado;
+
+                // Aquí podrías actualizar otros campos del pedido si es necesario
+
+                // Guardar los cambios en el repositorio
+                await _pedidoRepository.ActualizarAsync(pedidoExistente);
+
+                return true; // Edición exitosa
+            }
+
+            return false; // Pedido no encontrado
         }
+
+
+        #region Metodos Privados
+        private bool EsAdministrador(UsuarioDto usuario)
+        {
+            // Verificar si el usuario tiene el rol de Administrador
+            return usuario.Rol.Nombre == "Administrador";
+        }
+        #endregion
     }
 }

@@ -13,7 +13,9 @@ namespace Cafeteria.Domain
         Task<MateriaPrima> ObtenerPorIdAsync(int materiaPrimaId);
         Task AgregarAsync(MateriaPrima materiaPrima);
         Task ActualizarAsync(MateriaPrima materiaPrima);
-        Task EliminarAsync(int materiaPrimaId);
+        Task EliminarAsync(int materiaPrimaId);        
+        Task<MateriaPrima> ObtenerPorNombreAsync(string nombre);
+        Task ReducirStockAsync(int materiaPrimaId, int cantidad);
     }
 
 }

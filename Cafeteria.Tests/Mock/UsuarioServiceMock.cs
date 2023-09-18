@@ -179,9 +179,7 @@ namespace Cafeteria.Tests.Mock
 
 
         private int GenerarIdPedido()
-        {
-            // Simulación: Generar un ID único para el pedido
-            // En una aplicación real, esto podría obtenerse de una base de datos o generarse de otra manera.
+        {            
             return new Random().Next(1, 1000);
         }
 
@@ -205,17 +203,15 @@ namespace Cafeteria.Tests.Mock
             // Actualizar el estado de la comanda
             comanda.Estado = "Completada";
 
-            // Aquí puedes implementar la lógica para reducir el stock de materia prima según los ítems del pedido
+            
             foreach (var pedido in comanda.Pedidos)
             {
                 foreach (var item in pedido.Items)
                 {
-                    // Actualizar el stock de materia prima aquí
-                    await _materiaPrimaService.ReducirStockAsync(item.Nombre, item.Cantidad);
+                    
+                    await _materiaPrimaService.ReducirStockAsync(item.MateriaPrima, item.Cantidad);
                 }
-            }
-
-            // Realizar otras acciones necesarias, como notificar al supervisor o hacer facturación
+            }            
         }
 
         public Task<bool> ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto)

@@ -15,5 +15,6 @@ namespace Cafeteria.Domain.Entidades
         // Relación con ItemPedido (FK)
         public int ItemPedidoId { get; set; }
         public ItemPedido ItemPedido { get; set; }
+        public int CantidadDisponible { get; set; }
     }
 }

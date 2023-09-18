@@ -49,5 +49,36 @@ namespace Cafeteria.Intraestructura.Repository
                 await _dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task<MateriaPrima> ObtenerPorNombreAsync(string nombre)
+        {
+            return await _dbContext.MateriasPrimas
+                .FirstOrDefaultAsync(mp => mp.Nombre == nombre);
+        }
+
+
+        public async Task ReducirStockAsync(int materiaPrimaId, int cantidad)
+        {
+            var materiaPrima = await _dbContext.MateriasPrimas.FindAsync(materiaPrimaId);
+
+            if (materiaPrima != null)
+            {
+                if (materiaPrima.CantidadDisponible >= cantidad)
+                {
+                    materiaPrima.CantidadDisponible -= cantidad;
+                    await _dbContext.SaveChangesAsync(); // Guardar los cambios en la base de datos
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Stock insuficiente de '{materiaPrima.Nombre}' para reducir en {cantidad} unidades.");
+                }
+            }
+            else
+            {
+                throw new KeyNotFoundException($"No se encontró la materia prima con ID '{materiaPrimaId}'.");
+            }
+        }
+
+
     }
 }

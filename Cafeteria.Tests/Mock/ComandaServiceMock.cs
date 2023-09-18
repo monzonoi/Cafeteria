@@ -116,7 +116,7 @@ namespace Cafeteria.Tests.Mock
             throw new NotImplementedException();
         }
 
-        public Task ActualizarComandaAsync(int id, ComandaDto comandaDto)
+        public Task<bool> ActualizarComandaAsync(int id, ComandaDto comandaDto)
         {
             throw new NotImplementedException();
         }

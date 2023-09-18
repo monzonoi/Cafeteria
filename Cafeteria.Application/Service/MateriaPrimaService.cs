@@ -1,10 +1,5 @@
 ﻿using Cafeteria.Domain.Entidades;
 using Cafeteria.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cafeteria.Application.Dtos;
 
 namespace Cafeteria.Application.Service
@@ -23,13 +18,9 @@ namespace Cafeteria.Application.Service
         public async Task<IEnumerable<MateriaPrimaDto>> ObtenerTodasLasMateriasPrimasAsync()
         {
             var materiasPrimas = await _materiaPrimaRepository.ObtenerTodasAsync();
-            // Mapear las materias primas a MateriaPrimaDto según sea necesario
-            //var materiaPrimaDtos = materiasPrimas.Select(MapToMateriaPrimaDto);
-
+            
             var materiaPrimaDtos = from c in materiasPrimas
                                select MapToMateriaPrimaDto(c);
-
-
 
             return materiaPrimaDtos;
         }
@@ -114,24 +105,7 @@ namespace Cafeteria.Application.Service
             return true;
         }
 
-        public async Task<bool> ValidarStockDisponible(ItemPedidoDto itemPedido)
-        {
-            try
-            {
-                var materiaPrima = await _materiaPrimaRepository.ObtenerPorIdAsync(itemPedido.Id);
 
-                if (materiaPrima.CantidadDisponible < itemPedido.CantidadRequerida)
-                {
-                    return false; // No hay suficiente materia prima disponible
-                }
-
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false; // No se encontró la materia prima en el repositorio
-            }
-        }
 
         public async Task<bool> ReducirStockAsync(MateriaPrimaDto materiaprima, int cantidad)
         {
@@ -155,7 +129,7 @@ namespace Cafeteria.Application.Service
             }
         }
 
-        public async Task AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad)
+        public async Task<bool> AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad)
         {
             if (usuario == null || materiaPrima == null)
             {
@@ -181,6 +155,8 @@ namespace Cafeteria.Application.Service
 
             // Actualiza la materia prima en el repositorio
             await _materiaPrimaRepository.ActualizarAsync(materiaPrimaExistente);
+
+            return true;
         }
 
 

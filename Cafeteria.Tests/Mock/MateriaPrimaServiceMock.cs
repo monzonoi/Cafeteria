@@ -85,7 +85,7 @@ namespace Cafeteria.Tests.Mock
 
 
 
-        public async Task AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad)
+        public async Task<bool> AjustarMateriaPrimaAsync(UsuarioDto usuario, MateriaPrimaDto materiaPrima, int cantidad)
         {
             if (usuario == null || materiaPrima == null)
             {
@@ -108,6 +108,8 @@ namespace Cafeteria.Tests.Mock
 
             // Realiza el ajuste de stock según la cantidad especificada
             materiaPrimaExistente.Cantidad += cantidad;
+
+            return true;
         }
 
         private bool EsSupervisorOAdministrador(UsuarioDto usuario)

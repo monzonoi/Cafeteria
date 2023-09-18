@@ -14,8 +14,7 @@ namespace Cafeteria.Application.Service
         Task<IEnumerable<ComandaDto>> ObtenerTodasLasComandasAsync();
         Task<ComandaDto> ObtenerComandaPorIdAsync(int id);
         Task<int> CrearComandaAsync(ComandaDto comandaDto);
-        Task ActualizarComandaAsync(int id, ComandaDto comandaDto);
-        Task EliminarComandaAsync(int id);
+        Task<bool> ActualizarComandaAsync(int id, ComandaDto comandaDto);       
 
         
         Task<ComandaDto> ObtenerComandaAsync(int comandaId);

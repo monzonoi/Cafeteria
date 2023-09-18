@@ -2,11 +2,6 @@
 using Cafeteria.Domain;
 using Cafeteria.Domain.Entidades;
 using SendGrid.Helpers.Errors.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafeteria.Application.Service
 {
@@ -46,37 +41,7 @@ namespace Cafeteria.Application.Service
                 Nombre = usuario.Nombre,
                 // Mapear otras propiedades según sea necesario
             };
-        }
-
-        public async Task<Usuario> CrearUsuarioAsync(UsuarioDto usuarioDto)
-        {
-            var nuevoUsuario = new Usuario
-            {
-                Nombre = usuarioDto.Nombre,
-                Rol = new Rol { Nombre = usuarioDto.Rol.Nombre, Id = usuarioDto.RolId },
-                // Mapear otras propiedades desde el DTO
-            };
-
-            await _usuarioRepository.AgregarAsync(nuevoUsuario);
-            await _unitOfWork.CommitAsync();
-            return nuevoUsuario;
-        }
-
-        public async Task ActualizarUsuarioAsync(int id, UsuarioDto usuarioDto)
-        {
-            var usuarioExistente = await _usuarioRepository.ObtenerPorIdAsync(id);
-
-            if (usuarioExistente == null)
-            {
-                throw new NotFoundException($"Usuario con ID {id} no encontrado.");
-            }
-
-            usuarioExistente.Nombre = usuarioDto.Nombre;
-            // Actualizar otras propiedades desde el DTO según sea necesario
-
-            _usuarioRepository.Actualizar(usuarioExistente);
-            await _unitOfWork.CommitAsync();
-        }
+        }   
 
         public async Task<bool> EliminarUsuarioAsync(UsuarioDto administrador, int usuarioIdAEliminar)
         {

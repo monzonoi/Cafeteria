@@ -1,4 +1,5 @@
-﻿using Cafeteria.Application.Dtos;
+﻿using Cafeteria.API.Request;
+using Cafeteria.Application.Dtos;
 using Cafeteria.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -73,4 +74,65 @@ public class MateriaPrimaController : ControllerBase
             return BadRequest(ex.Message); // Retorna 400 en caso de error
         }
     }
+
+    /**********************************/
+
+    [HttpPost("ValidarStockDisponibleAsync")]
+    public async Task<IActionResult> ValidarStockDisponibleAsync([FromBody] ItemPedidoDto itemPedido)
+    {
+        try
+        {
+            if (itemPedido == null)
+            {
+                return BadRequest("El objeto ItemPedidoDto es inválido.");
+            }
+
+            var stockDisponible = await _materiaPrimaService.ValidarStockDisponibleAsync(itemPedido);
+
+            if (stockDisponible)
+            {            
+                return Ok("Stock disponible.");
+            }
+            else
+            {             
+                return BadRequest("Stock insuficiente.");
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpPost("AjustarMateriaPrimaAsync")]
+    public async Task<IActionResult> AjustarMateriaPrimaAsync([FromBody] AjusteMateriaPrimaRequest ajusteMateriaPrimaRequest)
+    {
+        try
+        {            
+            if (ajusteMateriaPrimaRequest == null)
+            {
+                return BadRequest("El objeto AjusteMateriaPrimaRequest es inválido.");
+            }
+
+            var resultado = await _materiaPrimaService.AjustarMateriaPrimaAsync(
+                ajusteMateriaPrimaRequest.Usuario,
+                ajusteMateriaPrimaRequest.MateriaPrima,
+                ajusteMateriaPrimaRequest.Cantidad
+            );
+
+            if (resultado)
+            {
+                return Ok("Ajuste de materia prima realizado con éxito.");
+            }
+            else
+            {             
+                return BadRequest("No se pudo realizar el ajuste de materia prima.");
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
 }

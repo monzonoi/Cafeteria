@@ -1,6 +1,6 @@
-﻿using Cafeteria.Application.Dtos;
+﻿using Cafeteria.API.Request;
+using Cafeteria.Application.Dtos;
 using Cafeteria.Application.Service;
-using Cafeteria.Domain.Entidades;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cafeteria.API.Controllers
@@ -17,14 +17,14 @@ namespace Cafeteria.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PedidoDto>>> ObtenerTodosLosPedidos()
+        public async Task<ActionResult<IEnumerable<PedidoDto>>> ObtenerTodosLosPedidosAsync()
         {
             var pedidos = await _pedidoService.ObtenerTodosLosPedidosAsync();
             return Ok(pedidos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PedidoDto>> ObtenerPedidoPorId(int id)
+        public async Task<ActionResult<PedidoDto>> ObtenerPedidoPorIdAsync(int id)
         {
             var pedido = await _pedidoService.ObtenerPedidoPorIdAsync(id);
             if (pedido == null)
@@ -34,23 +34,37 @@ namespace Cafeteria.API.Controllers
             return Ok(pedido);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<int>> CrearPedido([FromBody] PedidoDto pedidoDto)
+        [HttpPost("CrearPedidoAsync")]
+        public async Task<IActionResult> CrearPedidoAsync([FromBody] PedidoDto pedidoDto)
         {
             try
             {
-                var pedidoId = await _pedidoService.CrearPedidoAsync(pedidoDto);
-                return CreatedAtAction(nameof(ObtenerPedidoPorId), new { id = pedidoId }, pedidoId);
+                
+                if (pedidoDto == null)
+                {
+                    return BadRequest("El objeto PedidoDto es inválido.");
+                }
+                
+                int nuevoPedidoId = await _pedidoService.CrearPedidoAsync(pedidoDto);
+
+                if (nuevoPedidoId > 0)
+                {                
+                    return Created($"pedido/{nuevoPedidoId}", nuevoPedidoId);
+                }
+                else
+                {                 
+                    return BadRequest("No se pudo crear el pedido.");
+                }
             }
             catch (Exception ex)
-            {
-                // Manejo de errores y devolución de una respuesta de error adecuada
-                return BadRequest(ex.Message);
+            {                
+                return StatusCode(500, ex.Message);
             }
         }
 
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarPedido(int id, [FromBody] PedidoDto pedidoDto)
+        public async Task<IActionResult> ActualizarPedidoAsync(int id, [FromBody] PedidoDto pedidoDto)
         {
             try
             {
@@ -63,13 +77,12 @@ namespace Cafeteria.API.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores y devolución de una respuesta de error adecuada
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarPedido(int id)
+        public async Task<IActionResult> EliminarPedidoAsync(int id)
         {
             try
             {
@@ -82,9 +95,42 @@ namespace Cafeteria.API.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores y devolución de una respuesta de error adecuada
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPut("EditarPedidoAsync")]
+        public async Task<IActionResult> EditarPedidoAsync([FromBody] EditarPedidoRequest request)
+        {
+            try
+            {
+               
+                if (request.Usuario == null || request.Pedido == null)
+                {
+                    return BadRequest("Los objetos UsuarioDto y PedidoDto son inválidos.");
+                }
+
+                
+                bool resultadoEdicion = await _pedidoService.EditarPedidoAsync(request.Usuario, request.Pedido);
+
+                if (resultadoEdicion)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest("No se pudo editar el pedido.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+
+
     }
 }

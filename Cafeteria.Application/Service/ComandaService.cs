@@ -98,82 +98,26 @@ namespace Cafeteria.Application.Service
             };
         }
 
-        public async Task ActualizarComandaAsync(int id, ComandaDto comandaDto)
+        public async Task<bool> ActualizarComandaAsync(int id, ComandaDto comandaDto)
         {
             var comandaExistente = await _comandaRepository.ObtenerPorIdAsync(id);
 
             if (comandaExistente == null)
             {
-                throw new NotFoundException($"Comanda con ID {id} no encontrada.");
+                return false;
+                //throw new NotFoundException($"Comanda con ID {id} no encontrada.");                
             }
 
             // comandaDto.ActualizarComanda(comandaExistente); // Método para actualizar desde DTO
             await _comandaRepository.ActualizarAsync(comandaExistente);
             await _unitOfWork.CommitAsync();
+
+            return true;
         }
 
-        public async Task EliminarComandaAsync(int id)
-        {
-            var comandaExistente = await _comandaRepository.ObtenerPorIdAsync(id);
-            if (comandaExistente == null)
-            {
-                throw new NotFoundException("El café no existe.");
-            }
-
-            _comandaRepository.EliminarAsync(comandaExistente.Id);
-            await _unitOfWork.CommitAsync(); // Guardar cambios en la base de datos
-        }
+   
 
 
-        public async Task<Comanda> CrearComandaPorUsuarioAsync(int usuarioId)
-        {
-            var usuario = await _usuarioRepository.ObtenerPorIdAsync(usuarioId);
-
-            if (usuario == null)
-            {
-                throw new Exception("El usuario no existe o no tiene permiso para crear una comanda.");
-            }
-
-            var comanda = new Comanda
-            {
-                Id = usuario.Id,
-                Estado = "borrador", // La comanda se crea en estado "Borrador" inicialmente
-                FechaCreacion = DateTime.Now
-            };
-
-            await _comandaRepository.AgregarAsync(comanda);
-            await _unitOfWork.CommitAsync();
-
-            return comanda;
-        }
-
-
-        public async Task<Pedido> AgregarPedidoAComandaPorUsuarioAsync(int comandaId, PedidoDto pedidoDto, int usuarioId)
-        {
-            var usuario = await _usuarioRepository.ObtenerPorIdAsync(usuarioId);
-            var comanda = await _comandaRepository.ObtenerPorIdAsync(comandaId);
-
-            //if (usuario == null || comanda == null || usuario.Rol != Rol.Usuario || comanda.Estado != EstadoComanda.Borrador)
-            //{
-            //    throw new Exception("No se puede agregar un pedido a la comanda.");
-            //}
-
-            // Validar que el usuario solo pueda agregar pedidos de ciertos ítems disponibles
-            // Implementar lógica aquí para verificar la disponibilidad de materias primas y precios
-
-            var pedido = new Pedido
-            {
-                ComandaId = comanda.Id,
-                //Nombre = pedidoDto.Nombre,
-                //Precio = pedidoDto.Precio,
-                // Agregar más propiedades según corresponda
-            };
-
-            await _pedidoRepository.AgregarAsync(pedido);
-            await _unitOfWork.CommitAsync();
-
-            return pedido;
-        }
 
         public Task<ComandaDto> ObtenerComandaAsync(int comandaId)
         {
@@ -382,7 +326,7 @@ namespace Cafeteria.Application.Service
             // Por defecto, el usuario no tiene permiso para editar la comanda
             return false;
         }
-
+                
 
         #endregion
     }

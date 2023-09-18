@@ -1,4 +1,5 @@
-﻿using Cafeteria.Application.Dtos;
+﻿using Cafeteria.API.Request;
+using Cafeteria.Application.Dtos;
 using Cafeteria.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
@@ -36,9 +37,9 @@ namespace Cafeteria.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CrearUsuario([FromBody] UsuarioDto usuarioSolicitante, UsuarioDto usuarionuevo)
+        public async Task<ActionResult<int>> CrearUsuario([FromBody] CrearUsuarioRequest request)
         {
-            var idCreado = await _usuarioService.CrearUsuarioAsync(usuarioSolicitante, usuarionuevo);
+            var idCreado = await _usuarioService.CrearUsuarioAsync(request.UsuarioSolicitante, request.UsuarioNuevo);
             return CreatedAtAction(nameof(ObtenerUsuarioPorId), new { id = idCreado }, idCreado);
         }
 
@@ -69,5 +70,35 @@ namespace Cafeteria.API.Controllers
                 return NotFound();
             }
         }
+
+
+        [HttpPost("RegistrarUsuarioAsync")]
+        public async Task<IActionResult> RegistrarUsuarioAsync([FromBody] UsuarioDto usuarioDto)
+        {
+            try
+            {                
+                if (usuarioDto == null)
+                {
+                    return BadRequest("El objeto UsuarioDto es inválido.");
+                }
+                             
+                var nuevoUsuario = await _usuarioService.RegistrarUsuarioAsync(usuarioDto);
+
+                if (nuevoUsuario != null)
+                {                    
+                    return Created("usuario/ObtenerUsuarioPorId", nuevoUsuario);
+                }
+                else
+                {                    
+                    return BadRequest("No se pudo registrar al usuario.");
+                }
+            }
+            catch (Exception ex)
+            {                
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
     }
 }

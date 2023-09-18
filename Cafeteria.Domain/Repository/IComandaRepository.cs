@@ -14,6 +14,8 @@ namespace Cafeteria.Domain
         Task AgregarAsync(Comanda comanda);
         Task ActualizarAsync(Comanda comanda);
         Task EliminarAsync(int comandaId);
+        Task<List<Comanda>> ObtenerComandasPorUsuarioAsync(int id);    
+        Task<IEnumerable<Pedido>> ObtenerComandasNoCompletadasAsync();
     }
 
 }

@@ -49,5 +49,30 @@ namespace Cafeteria.Intraestructura.Repository
                 await _dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task<List<Comanda>> ObtenerComandasPorUsuarioAsync(int usuarioId)
+        {
+           
+            var comandas = await _dbContext.Comandas
+                .Where(c => c.EmpleadoId == usuarioId)
+                .ToListAsync();
+
+            return comandas;
+            
+        }
+
+        public async Task<IEnumerable<Pedido>> ObtenerPedidosNoCompletadosAsync()
+        {
+            var pedidosNoCompletados = await _dbContext.Pedidos
+                .Where(p => p.Estado != "Completado")
+                .ToListAsync();
+
+            return pedidosNoCompletados.AsEnumerable();
+        }
+
+        public Task<IEnumerable<Pedido>> ObtenerComandasNoCompletadasAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

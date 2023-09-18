@@ -21,7 +21,7 @@ namespace Cafeteria.Intraestructura.Repository
         public async Task<Pedido> ObtenerPorIdAsync(int pedidoId)
         {
             return await _dbContext.Pedidos
-                //.Include(p => p.Items) // Incluir ítems de pedido
+                .Include(p => p.Items) // Incluir ítems de pedido
                 .SingleOrDefaultAsync(p => p.Id == pedidoId);
         }
 
@@ -52,6 +52,15 @@ namespace Cafeteria.Intraestructura.Repository
                 _dbContext.Pedidos.Remove(pedido);
                 await _dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<Pedido>> ObtenerPedidosPorComandaAsync(int comandaId)
+        {
+            var pedidos = await _dbContext.Pedidos
+                .Where(p => p.ComandaId == comandaId)
+                .ToListAsync();
+
+            return pedidos;
         }
     }
 }

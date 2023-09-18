@@ -19,5 +19,6 @@ namespace Cafeteria.Domain.Entidades
         // Relación con Pedido (1 Comanda -> Varios Pedidos)
         public List<Pedido> Pedidos { get; set; }
         public string Estado { get; set; } //EnProceso, Completada, Cancelada, Facturada
+        
     }
 }

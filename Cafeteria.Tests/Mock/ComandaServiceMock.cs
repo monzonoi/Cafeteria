@@ -68,6 +68,7 @@ namespace Cafeteria.Tests.Mock
             }
         }
 
+
         public async Task<List<PedidoDto>> ObtenerTodosAsync(UsuarioDto usuario)
         {
             // Verificar si el usuario tiene permiso para ver los pedidos
@@ -185,10 +186,6 @@ namespace Cafeteria.Tests.Mock
 
         public Task<bool> EditarComandaAsync(UsuarioDto usuario, ComandaDto comanda)
         {
-            // Simula la lógica de edición de una comanda
-            // Por ejemplo, puedes verificar si el usuario tiene permiso para editar
-            // y luego actualizar la comanda en la lista simulada
-
             var comandaExistente = _comandasEnMemoria.FirstOrDefault(c => c.Id == comanda.Id);
 
             if (comandaExistente != null)

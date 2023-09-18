@@ -14,6 +14,7 @@ namespace Cafeteria.Domain
         Task AgregarAsync(Pedido pedido);
         Task ActualizarAsync(Pedido pedido);
         Task EliminarAsync(int pedidoId);
+        Task<List<Pedido>> ObtenerPedidosPorComandaAsync(int id);
     }
 
 }
